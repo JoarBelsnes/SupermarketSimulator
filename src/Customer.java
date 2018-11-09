@@ -1,17 +1,12 @@
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
+
 public class Customer {
     private String name;
     private int items;
-    private long arrival; //time in milliseconds
 
     Customer(){
+        name = "Customer1";
+        items = 0;
 
-        this.name = "Customer1";
-        this.items = 0;
-        this.arrival = arrival;
 
 
 
@@ -23,35 +18,28 @@ public class Customer {
 
     /******* Getters and Setters  *******/
     /* SETTERS */
-    void setName(String name){
-        this.name = name;
+    void setName(String name1){
+        this.name = name1;
     }
 
-    void setItems(int items){
-        this.items = items;
+    void setItems(int items1){
+        this.items = items1;
     }
 
-    void setArrival(){
-        arrival = System.currentTimeMillis();
-        this.arrival= TimeUnit.MILLISECONDS.toSeconds(arrival);
-    }
+
 
     /* GETTERS */
     String getName(){
-        return this.name;
+        return name;
     }
 
     int getItems(){
-        return this.items;
+        return items;
     }
 
-    long getArrival(){
-        return arrival;
-    }
 
-    long getElapsedTime(){
-        return ((TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()))-arrival);
-    }
+
+
 
 
 
