@@ -1,5 +1,5 @@
 import java.util.concurrent.TimeUnit;
-
+import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
@@ -8,6 +8,10 @@ public class Main {
 
         //create customers here
         Customer customer1 = new Customer("Jae",7);
+
+        //create priority queue for events
+        PriorityQueue<Event> pQueue = new PriorityQueue<Event>();
+
 
 
         /************ CREATING TIME ***************/
