@@ -15,17 +15,14 @@ public class Main {
         ArrayList<Customer> customers = generateCustomers(numCustomers);
 
         //create priority queue for events, ordered by start time
-        PriorityQueue<Event> eventQueue = new PriorityQueue<>(new Comparator<Event>() {
-            @Override
-            public int compare(Event e1, Event e2) {
-                if (e1.getStartTime() > e2.getStartTime()) {
-                    return 1;
-                }
-                if (e1.getStartTime() < e2.getStartTime()) {
-                    return -1;
-                }
-                return 0;
+        PriorityQueue<Event> eventQueue = new PriorityQueue<>((e1, e2) -> {
+            if (e1.getStartTime() > e2.getStartTime()) {
+                return 1;
             }
+            if (e1.getStartTime() < e2.getStartTime()) {
+                return -1;
+            }
+            return 0;
         });
 
         //add customer arrivals to event queue
@@ -33,10 +30,12 @@ public class Main {
             eventQueue.add(new Event(customer, type.CUSTOMER_ARRIVES, rand.nextInt(101)));
         }
 
+        /*
         //poll the entire queue for testing purposes; remove this when actually using it
-        for(int i = 0; i < eventQueue.size(); i++){
+        for(int i = 0; i < numCustomers; i++){
             System.out.println("Customer arriving at " + eventQueue.poll().getStartTime());
         }
+        */
 
         /************ CREATING TIME ***************/
         //testing to see if setArrival actually works

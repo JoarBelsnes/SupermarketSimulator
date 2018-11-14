@@ -4,7 +4,7 @@ public class Customer {
     private int items;
 
     Customer() {
-        name = "Customer1";
+        name = "Customer";
         items = 0;
     }
 
