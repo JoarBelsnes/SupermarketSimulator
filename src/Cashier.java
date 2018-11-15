@@ -18,11 +18,15 @@ public class Cashier {
     /***
      * "checks out" the first person in line,
      * removing them from the list.
+     * returns an integer equal to the time it takes
+     * for the customer to be finished.
      */
-    public void checkOutNext(){
-        //how long does it take to check out?
-        //when/how to queue next checkout?
+    public int checkOutNext(){
+        //for now, takes one time-step per item to check out
+        int time = customers.get(0).getItems();
 
         customers.remove(0);
+
+        return time;
     }
 }

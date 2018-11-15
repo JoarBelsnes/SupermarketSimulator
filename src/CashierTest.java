@@ -21,6 +21,17 @@ class CashierTest {
 
     @Test
     void checkOutNext() {
+        Cashier testCashier = new Cashier();
+        Customer c1 = new Customer("One",1);
+        Customer c2 = new Customer("Two",2);
+
+        testCashier.addCustomerToQueue(c1);
+        testCashier.addCustomerToQueue(c2);
+
+        assertAll("checkoutTimes",
+                () -> assertEquals(testCashier.checkOutNext(),c1.getItems()),
+                () -> assertEquals(testCashier.checkOutNext(),c2.getItems())
+        );
 
     }
 
