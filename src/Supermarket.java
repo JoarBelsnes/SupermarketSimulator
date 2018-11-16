@@ -64,25 +64,7 @@ public class Supermarket {
                 while (eventQueue.size() > 0 && eventQueue.peek().getStartTime() == currentTime) {
                     //poll returns the event while removing it from the queue, use that to handle it
                     currentEvent = eventQueue.poll();
-
-                    //placeholder for actually handling an event
-                    switch (currentEvent.getEventType()) {
-                        case CUSTOMER_ARRIVES:
-                            System.out.println("A customer arrived");
-                            break;
-                        case CUSTOMER_READY_CHECKOUT:
-                            System.out.println("A customer is ready for checkout");
-                            break;
-                        case CUSTOMER_FINISH_CHECKOUT:
-                            System.out.println("A customer finished checkout");
-                            break;
-                        case CUSTOMER_CHANGE_LINE:
-                            System.out.println("A customer wants to change lines");
-                            break;
-                        case CUSTOMER_ABANDON:
-                            System.out.println("A customer abandoned the store");
-                            break;
-                    }
+                    handleEvent(currentEvent);
                 }
 
                 TimeUnit.SECONDS.sleep(1);
@@ -91,6 +73,26 @@ public class Supermarket {
                 e.printStackTrace();
             }
             System.out.println("Current System Time: " + currentTime);
+        }
+    }
+
+    private void handleEvent(Event event){
+        switch (event.getEventType()) {
+            case CUSTOMER_ARRIVES:
+                System.out.println("A customer arrived");
+                break;
+            case CUSTOMER_READY_CHECKOUT:
+                System.out.println("A customer is ready for checkout");
+                break;
+            case CUSTOMER_FINISH_CHECKOUT:
+                System.out.println("A customer finished checkout");
+                break;
+            case CUSTOMER_CHANGE_LINE:
+                System.out.println("A customer wants to change lines");
+                break;
+            case CUSTOMER_ABANDON:
+                System.out.println("A customer abandoned the store");
+                break;
         }
     }
 
