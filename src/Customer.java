@@ -1,36 +1,41 @@
 
 public class Customer {
-    private String name;
+    private int id;
     private int items;
 
     Customer() {
-        name = "Customer";
+        id = 0;
         items = 0;
     }
 
-    Customer(String name, int items) {
-        this.name = name;
+    Customer(int id, int items) {
+        this.id = id;
         this.items = items;
     }
 
     /******* Getters and Setters  *******/
     /* SETTERS */
-    void setName(String name1) {
-        this.name = name1;
+    void setId(int id) {
+        this.id = id;
     }
 
-    void setItems(int items1) {
-        this.items = items1;
+    void setItems(int items) {
+        this.items = items;
     }
 
 
     /* GETTERS */
-    String getName() {
-        return name;
+    int getId() {
+        return id;
     }
 
     int getItems() {
         return items;
+    }
+
+    //returns time it takes to shop based on shopping list size and other factors
+    int getShoppingTime() {
+        return items / 2;
     }
 
 

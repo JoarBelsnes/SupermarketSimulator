@@ -21,7 +21,7 @@ public class Supermarket {
         customers = generateCustomers(numCustomers);
         cashiers = new ArrayList<Cashier>(numCashiers);
 
-        //event queue is priority sorted by lowest time
+        //create event queue, priority sorted by lowest time
         eventQueue = new PriorityQueue<>((e1, e2) -> {
             if (e1.getStartTime() > e2.getStartTime()) {
                 return 1;
@@ -32,7 +32,7 @@ public class Supermarket {
             return 0;
         });
 
-        //add customer arrivals to event queue
+        //add all customer arrivals to event queue
         for (Customer customer : customers) {
             eventQueue.add(new Event(customer, type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
         }
@@ -49,7 +49,7 @@ public class Supermarket {
         ArrayList<Customer> customers = new ArrayList<>(numCustomers);
         for (int i = 0; i < numCustomers; i++) {
             //items range from 1-50
-            customers.add(new Customer(Integer.toString(i), rand.nextInt(51)));
+            customers.add(new Customer(i, rand.nextInt(51)));
         }
         return customers;
     }
@@ -76,20 +76,55 @@ public class Supermarket {
         }
     }
 
-    private void handleEvent(Event event){
+    /***
+     * handles events, based on the event type
+     * @param event the event to handle
+     */
+    private void handleEvent(Event event) {
         switch (event.getEventType()) {
+
+            //when a customer arrives in the store, decide when they'll be ready for checkout
             case CUSTOMER_ARRIVES:
                 System.out.println("A customer arrived");
+                //calculate how long it takes to shop and enqueue the ready_checkout event
+                eventQueue.add(new Event(event.getCustomer(),
+                        type.CUSTOMER_READY_CHECKOUT,
+                        currentTime + event.getCustomer().getShoppingTime()));
                 break;
+
+            //when a customer is ready for checkout, decide what line to go in and decide when they will be done
             case CUSTOMER_READY_CHECKOUT:
                 System.out.println("A customer is ready for checkout");
+                //decide what line to go in: choose the one with the shortest line
+                int minLineLength = cashiers.get(0).getLineLength();
+                int chosenCashier = 0;
+                for(Cashier c : cashiers){
+                    if(c.getLineLength() < minLineLength){
+                        minLineLength = c.getLineLength();
+                        chosenCashier = cashiers.indexOf(c);
+                    }
+                }
+                //add customer to chosen cashier's line
+                cashiers.get(chosenCashier).addCustomerToQueue(event.getCustomer());
+
+                //how to calculate when customer will finish checkout?
+                //what if they change lines?
+
                 break;
+
+            //when a customer finishes checkout, simply remove them from the simulation
             case CUSTOMER_FINISH_CHECKOUT:
                 System.out.println("A customer finished checkout");
                 break;
+
+            //when a customer changes lines, queue ready for checkout again
+            //and REMOVE their existing finish_checkout event for the current cashier
             case CUSTOMER_CHANGE_LINE:
                 System.out.println("A customer wants to change lines");
                 break;
+
+            //when a customer abandons the store, simply remove them from the simulation
+            //and REMOVE their existing finish_checkout event
             case CUSTOMER_ABANDON:
                 System.out.println("A customer abandoned the store");
                 break;

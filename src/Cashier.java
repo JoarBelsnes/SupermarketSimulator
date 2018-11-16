@@ -11,6 +11,10 @@ public class Cashier {
         return customers;
     }
 
+    public int getLineLength(){
+        return customers.size();
+    }
+
     public void addCustomerToQueue(Customer c){
         customers.add(c);
     }
