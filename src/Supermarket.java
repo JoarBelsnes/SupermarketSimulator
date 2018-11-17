@@ -7,10 +7,13 @@ public class Supermarket {
     private int maxSimulationTime;
     private int numCustomers;
     private int numCashiers;
+
     private PriorityQueue<Event> eventQueue;
     private ArrayList<Customer> customers;
     private ArrayList<Cashier> cashiers;
-    private int currentTime = 0;
+
+    //make currentTime public to all classes
+    public int currentTime = 0;
     private Random rand = new Random();
 
     //constructor
@@ -18,6 +21,7 @@ public class Supermarket {
         this.maxSimulationTime = maxSimulationTime;
         this.numCustomers = numCustomers;
         this.numCashiers = numCashiers;
+
         customers = generateCustomers(numCustomers);
         cashiers = new ArrayList<Cashier>(numCashiers);
 
@@ -33,9 +37,14 @@ public class Supermarket {
         });
 
         //add customer arrivals to event queue
+        //customer arrival time is true, therefore is ready for another event
         for (Customer customer : customers) {
             eventQueue.add(new Event(customer, type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
+            customer.setArrived();
         }
+
+
+
 
     }
 
@@ -45,6 +54,7 @@ public class Supermarket {
      * @return arraylist of all customers
      */
     private ArrayList<Customer> generateCustomers(int numCustomers) {
+
         Random rand = new Random();
         ArrayList<Customer> customers = new ArrayList<>(numCustomers);
         for (int i = 0; i < numCustomers; i++) {
@@ -57,6 +67,8 @@ public class Supermarket {
     public void run() {
         currentTime = 0;
         Event currentEvent;
+        boolean addComplete = false;
+        boolean readyForCheckoutComplete = false;
 
         while (currentTime < maxSimulationTime) {
             try {
@@ -94,6 +106,10 @@ public class Supermarket {
                 System.out.println("A customer abandoned the store");
                 break;
         }
+    }
+    //need this to determine event times
+    public int getCurrentTime(){
+        return currentTime;
     }
 
 }
