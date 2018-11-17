@@ -1,5 +1,9 @@
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.scene.Scene;
 import javafx.scene.*;
@@ -42,7 +46,7 @@ public class Gui extends Application {
         // Creating Labels
         Text lblMaxCustomers = new Text("Max. Customers: ");
         Text lblNumberOfCheckoutLines = new Text("# of Checkout Lines: ");
-        Text lblNumberOfLimitedCheckoutLines = new Text("# of 'x Items or Less' Checkout Lines: ");
+        // Text lblNumberOfLimitedCheckoutLines = new Text("# of 'x Items or Less' Checkout Lines: ");
         Text lblMaxSimulationTime = new Text("Max. Simulation Time: ");
         Text lblQueueSelectionMethod = new Text("Queue Selection Method");
 
@@ -50,7 +54,7 @@ public class Gui extends Application {
         // Creating Text Fields
         TextField txtMaxCustomers = new TextField();
         TextField txtNumberOfCheckoutLines = new TextField();
-        TextField txtNumberOfLimitedCheckoutLines = new TextField();
+        // TextField txtNumberOfLimitedCheckoutLines = new TextField();
         TextField txtMaxSimulationTime = new TextField();
 
         // Combo Boxes
@@ -72,8 +76,8 @@ public class Gui extends Application {
         grid.add(cmbQueueSelectionMethod, 2, 1, 2, 1);
         grid.add(lblNumberOfCheckoutLines, 0, 1);
         grid.add(txtNumberOfCheckoutLines, 1, 1);
-        grid.add(lblNumberOfLimitedCheckoutLines, 0, 2);
-        grid.add(txtNumberOfLimitedCheckoutLines, 1, 2);
+        // grid.add(lblNumberOfLimitedCheckoutLines, 0, 2);
+        // grid.add(txtNumberOfLimitedCheckoutLines, 1, 2);
         grid.add(lblMaxSimulationTime, 0, 3);
         grid.add(txtMaxSimulationTime, 1, 3);
 
@@ -86,9 +90,53 @@ public class Gui extends Application {
         primaryStage.setScene(primaryScene);
         primaryStage.show();
 
+        // Handlers
+        menuFileExit.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t) {
+                System.exit(0);
+            }
+        });
+        menuFileNew.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t) {
+                txtMaxCustomers.setText("10");
+                txtMaxSimulationTime.setText("50");
+                txtNumberOfCheckoutLines.setText("2");
+            }
+        });
+        menuSimulationRun.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t) {
+                Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                smart.run();
+            }
+        });
 
+        // Listeners
+        // These Enforce only Integers in the text boxes
+        txtMaxCustomers.textProperty().addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue){
+                if (!newValue.matches("\\d*")) {
+                    txtMaxCustomers.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        txtNumberOfCheckoutLines.textProperty().addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue){
+                if (!newValue.matches("\\d*")) {
+                    txtNumberOfCheckoutLines.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        txtMaxSimulationTime.textProperty().addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue){
+                if (!newValue.matches("\\d*")) {
+                    txtMaxSimulationTime.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
-
     public static void main(String[] args) {
         launch(args);
     }
