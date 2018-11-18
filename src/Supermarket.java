@@ -39,6 +39,10 @@ public class Supermarket {
 
     }
 
+    public PriorityQueue<Event> getEventQueue() {
+        return eventQueue;
+    }
+
     /***
      * generates an arraylist of customers of a specified size, with random size shopping lists
      * @param numCustomers number of customers to enter the store
@@ -96,6 +100,9 @@ public class Supermarket {
             case CUSTOMER_READY_CHECKOUT:
                 System.out.println("A customer is ready for checkout");
                 //decide what line to go in: choose the one with the shortest line
+
+                /*
+
                 int minLineLength = cashiers.get(0).getLineLength();
                 int chosenCashier = 0;
                 for(Cashier c : cashiers){
@@ -107,8 +114,12 @@ public class Supermarket {
                 //add customer to chosen cashier's line
                 cashiers.get(chosenCashier).addCustomerToQueue(event.getCustomer());
 
+*/
                 //how to calculate when customer will finish checkout?
                 //what if they change lines?
+
+                //temp
+                eventQueue.add(new Event(event.getCustomer(), type.CUSTOMER_FINISH_CHECKOUT, currentTime + 5));
 
                 break;
 
@@ -129,6 +140,10 @@ public class Supermarket {
                 System.out.println("A customer abandoned the store");
                 break;
         }
+    }
+
+    public void addEventToQueue(Event e) {
+        eventQueue.add(e);
     }
 
 }
