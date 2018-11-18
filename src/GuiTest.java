@@ -1,7 +1,8 @@
-import org.junit.Assert;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static com.sun.xml.internal.ws.dump.LoggingDumpTube.Position.Before;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class GuiTest {
@@ -9,13 +10,13 @@ public class GuiTest {
 
    /** Fixture initialization (common initialization
     *  for all tests). **/
-   @Before public void setUp() {
+   @BeforeAll
+   public void setUp() {
    }
 
 
    /** A test that always fails. **/
    @Test public void defaultTest() {
-      Assert.assertEquals("Default test added by jGRASP. Delete "
-            + "this test once you have added your own.", 0, 1);
+      assertEquals(0, 1);
    }
 }

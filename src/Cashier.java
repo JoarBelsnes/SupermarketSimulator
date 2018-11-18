@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Cashier {
-    private ArrayList<Customer> customers;
+    private ArrayList<Customer> customers = new ArrayList<>(0);
 
     public Cashier(){
         customers = new ArrayList<>(1);
