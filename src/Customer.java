@@ -1,71 +1,40 @@
-
 public class Customer {
     private int id;
-    private String name;
     private int items;
 
-    //this will be useful to determine if the customer completed an arrival
-    boolean arrived;
-    boolean readyCheckout;
-
-
     Customer() {
-        name = "Customer1";
-        id = 1;
+        id = 0;
         items = 0;
-        arrived = false;
-        readyCheckout = false;
     }
 
-    Customer(String name, int items) {
-        this.name = name;
+    Customer(int id, int items) {
+        this.id = id;
         this.items = items;
     }
 
     /******* Getters and Setters  *******/
     /* SETTERS */
-    void setName(String name1) {
-        this.name = name1;
+    void setId(int id) {
+        this.id = id;
     }
 
-    void setItems(int items1) {
-        this.items = items1;
-    }
-
-    void setId(int id1){
-        this.id = id1;
-    }
-
-    //event setters
-    void setArrived(){
-        arrived = true;
-    }
-
-    void setReadyCheckout(){
-        readyCheckout = true;
+    void setItems(int items) {
+        this.items = items;
     }
 
 
     /* GETTERS */
-    String getName() {
-        return name;
+    int getId() {
+        return id;
     }
 
     int getItems() {
         return items;
     }
 
-    int getId(){
-        return id;
-    }
-
-    //event getters
-    boolean arrived(){
-        return arrived;
-    }
-
-    boolean isReadyCheckout(){
-        return readyCheckout;
+    //returns time it takes to shop based on shopping list size and other factors
+    int getShoppingTime() {
+        return items / 2;
     }
 
 

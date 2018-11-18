@@ -19,6 +19,10 @@ public class Event {
         this.startTime = startTime;
     }
 
+    void setEventType(type eventType1){
+        this.eventType = eventType1;
+    }
+
     //getters
     int getStartTime() {
         return startTime;
@@ -31,6 +35,7 @@ public class Event {
     type getEventType() {
         return eventType;
     }
+
 
 
 }
