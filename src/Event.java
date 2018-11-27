@@ -6,10 +6,10 @@ enum type {
 public class Event {
     private type eventType;
     private int startTime;
-    private Customer customer;
+    private int customerID;
 
-    public Event(Customer customer, type eventType, int startTime) {
-        this.customer = customer;
+    public Event(int customerID, type eventType, int startTime) {
+        this.customerID = customerID;
         this.eventType = eventType;
         this.startTime = startTime;
     }
@@ -24,8 +24,8 @@ public class Event {
         return startTime;
     }
 
-    Customer getCustomer() {
-        return customer;
+    int getCustomerID() {
+        return customerID;
     }
 
     type getEventType() {

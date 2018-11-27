@@ -21,6 +21,11 @@ public class Supermarket {
         customers = generateCustomers(numCustomers);
         cashiers = new ArrayList<Cashier>(numCashiers);
 
+        //populate cashiers list
+        for(int i = 0; i < numCashiers; i++){
+            cashiers.add(new Cashier());
+        }
+
         //create event queue, priority sorted by lowest time
         eventQueue = new PriorityQueue<>((e1, e2) -> {
             if (e1.getStartTime() > e2.getStartTime()) {
@@ -34,7 +39,8 @@ public class Supermarket {
 
         //add all customer arrivals to event queue
         for (Customer customer : customers) {
-            eventQueue.add(new Event(customer, type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
+            //change random number to number generated with formula
+            eventQueue.add(new Event(customer.getId(), type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
         }
 
     }
@@ -53,6 +59,7 @@ public class Supermarket {
         ArrayList<Customer> customers = new ArrayList<>(numCustomers);
         for (int i = 0; i < numCustomers; i++) {
             //items range from 1-50
+            //should there be a formula for items?
             customers.add(new Customer(i, rand.nextInt(51)));
         }
         return customers;
@@ -89,19 +96,17 @@ public class Supermarket {
 
             //when a customer arrives in the store, decide when they'll be ready for checkout
             case CUSTOMER_ARRIVES:
-                System.out.println("A customer arrived");
+                System.out.println("Customer " + event.getCustomerID() + " arrived");
                 //calculate how long it takes to shop and enqueue the ready_checkout event
-                eventQueue.add(new Event(event.getCustomer(),
+                eventQueue.add(new Event(event.getCustomerID(),
                         type.CUSTOMER_READY_CHECKOUT,
-                        currentTime + event.getCustomer().getShoppingTime()));
+                        currentTime + customers.get(event.getCustomerID()).getShoppingTime()));
                 break;
 
             //when a customer is ready for checkout, decide what line to go in and decide when they will be done
             case CUSTOMER_READY_CHECKOUT:
-                System.out.println("A customer is ready for checkout");
+                System.out.println("Customer " + event.getCustomerID() + " is ready for checkout");
                 //decide what line to go in: choose the one with the shortest line
-
-                /*
 
                 int minLineLength = cashiers.get(0).getLineLength();
                 int chosenCashier = 0;
@@ -112,32 +117,31 @@ public class Supermarket {
                     }
                 }
                 //add customer to chosen cashier's line
-                cashiers.get(chosenCashier).addCustomerToQueue(event.getCustomer());
+                cashiers.get(chosenCashier).addCustomerToQueue(event.getCustomerID());
 
-*/
                 //how to calculate when customer will finish checkout?
                 //what if they change lines?
 
-                //temp
-                eventQueue.add(new Event(event.getCustomer(), type.CUSTOMER_FINISH_CHECKOUT, currentTime + 5));
+                //placeholder time, create a formula for checkout time
+                eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT, currentTime + 5));
 
                 break;
 
             //when a customer finishes checkout, simply remove them from the simulation
             case CUSTOMER_FINISH_CHECKOUT:
-                System.out.println("A customer finished checkout");
+                System.out.println("Customer " + event.getCustomerID() + " finished checkout");
                 break;
 
             //when a customer changes lines, queue ready for checkout again
             //and REMOVE their existing finish_checkout event for the current cashier
             case CUSTOMER_CHANGE_LINE:
-                System.out.println("A customer wants to change lines");
+                System.out.println("Customer " + event.getCustomerID() + " wants to change lines");
                 break;
 
             //when a customer abandons the store, simply remove them from the simulation
             //and REMOVE their existing finish_checkout event
             case CUSTOMER_ABANDON:
-                System.out.println("A customer abandoned the store");
+                System.out.println("Customer " + event.getCustomerID() + " abandoned the store");
                 break;
         }
     }

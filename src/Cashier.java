@@ -1,13 +1,15 @@
 import java.util.ArrayList;
 
 public class Cashier {
-    private ArrayList<Customer> customers = new ArrayList<>(0);
+    //the checkout line is an arraylist of customer IDs
+    //that can be identified by the supermarket
+    private ArrayList<Integer> customers = new ArrayList<>(0);
 
     public Cashier(){
         customers = new ArrayList<>(1);
     }
 
-    public ArrayList<Customer> getCustomers(){
+    public ArrayList<Integer> getCustomers(){
         return customers;
     }
 
@@ -15,7 +17,7 @@ public class Cashier {
         return customers.size();
     }
 
-    public void addCustomerToQueue(Customer c){
+    public void addCustomerToQueue(int c){
         customers.add(c);
     }
 
@@ -25,6 +27,8 @@ public class Cashier {
      * returns an integer equal to the time it takes
      * for the customer to be finished.
      */
+    //probably going to remove this as it doesn't work anymore and probably isn't needed
+    /*
     public int checkOutNext(){
         //for now, takes one time-step per item to check out
         int time = customers.get(0).getItems();
@@ -33,4 +37,5 @@ public class Cashier {
 
         return time;
     }
+    */
 }
