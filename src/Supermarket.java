@@ -75,7 +75,9 @@ public class Supermarket {
                 while (eventQueue.size() > 0 && eventQueue.peek().getStartTime() == currentTime) {
                     //poll returns the event while removing it from the queue, use that to handle it
                     currentEvent = eventQueue.poll();
-                    handleEvent(currentEvent);
+                    if(currentEvent != null) {
+                        handleEvent(currentEvent);
+                    }
                 }
 
                 TimeUnit.SECONDS.sleep(1);
@@ -121,6 +123,9 @@ public class Supermarket {
 
                 //how to calculate when customer will finish checkout?
                 //what if they change lines?
+                /**
+                 * If customer changes line, reset customer checkoutTime to formula
+                 */
 
                 //placeholder time, create a formula for checkout time
                 eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT, currentTime + 5));
@@ -130,6 +135,11 @@ public class Supermarket {
             //when a customer finishes checkout, simply remove them from the simulation
             case CUSTOMER_FINISH_CHECKOUT:
                 System.out.println("Customer " + event.getCustomerID() + " finished checkout");
+
+                int testRemove = event.getCustomerID();
+                eventQueue.remove(event);
+                
+                System.out.println("Customer "+testRemove+" was removed!");
                 break;
 
             //when a customer changes lines, queue ready for checkout again
