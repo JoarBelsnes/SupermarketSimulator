@@ -1,16 +1,27 @@
+import java.util.Random;
+
 
 public class Customer {
     private int id;
     private int items;
+    private boolean willChange; //default to false
+    private int patienceFactor; //between 0-10, lower the patience the higher chance to leave/change
 
     Customer() {
         id = 0;
         items = 0;
+        willChange = false;
+
+        Random rand = new Random();
+        patienceFactor = rand.nextInt(10) + 1;
     }
 
     Customer(int id, int items) {
         this.id = id;
         this.items = items;
+
+        Random rand = new Random();
+        this.patienceFactor = rand.nextInt(15) + 1;
     }
 
     /******* Getters and Setters  *******/
@@ -21,6 +32,14 @@ public class Customer {
 
     void setItems(int items) {
         this.items = items;
+    }
+
+    void setWillChange(boolean willChange1) {
+        this.willChange = willChange1;
+    }
+
+    void setPatienceFactor(int patienceFactor1) {
+        this.patienceFactor = patienceFactor1;
     }
 
 
@@ -38,5 +57,26 @@ public class Customer {
         return items / 2;
     }
 
+    //
+    boolean getWillChange() {
+        return willChange;
+    }
 
+
+    //use this to determine patience level
+    //decrease patience when called
+    int decreasePatienceFactor() {
+        if (patienceFactor >= 2) {
+            patienceFactor--;
+            return patienceFactor;
+        }
+        else {
+            return patienceFactor;
+        }
+    }
+
+    //returns only the patience factor
+    int getPatienceFactor(){
+        return patienceFactor;
+    }
 }

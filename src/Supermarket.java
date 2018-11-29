@@ -85,7 +85,7 @@ public class Supermarket {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println("Current System Time: " + currentTime);
+            System.out.println("Current System Time: " + currentTime+"\n");
         }
     }
 
@@ -98,7 +98,7 @@ public class Supermarket {
 
             //when a customer arrives in the store, decide when they'll be ready for checkout
             case CUSTOMER_ARRIVES:
-                System.out.println("Customer " + event.getCustomerID() + " arrived");
+                System.out.println("Customer " + event.getCustomerID() + " arrived\n");
                 //calculate how long it takes to shop and enqueue the ready_checkout event
                 eventQueue.add(new Event(event.getCustomerID(),
                         type.CUSTOMER_READY_CHECKOUT,
@@ -107,7 +107,7 @@ public class Supermarket {
 
             //when a customer is ready for checkout, decide what line to go in and decide when they will be done
             case CUSTOMER_READY_CHECKOUT:
-                System.out.println("Customer " + event.getCustomerID() + " is ready for checkout");
+                System.out.println("Customer " + event.getCustomerID() + " is ready for checkout\n");
                 //decide what line to go in: choose the one with the shortest line
 
                 int minLineLength = cashiers.get(0).getLineLength();
@@ -123,12 +123,30 @@ public class Supermarket {
 
                 //how to calculate when customer will finish checkout?
                 //what if they change lines?
+
+                //Algorithm here for customer abandon store/line
+
                 /**
                  * If customer changes line, reset customer checkoutTime to formula
                  */
+                //System.out.println("Customer "+event.getCustomerID()+" patience factor before: "+customers.get(0).getPatienceFactor());
+
+                if((customers.get(0).getPatienceFactor() <= 5) && (customers.get(0).getPatienceFactor() >=1 )){
+                    eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_CHANGE_LINE, currentTime + 5 ));
+                }
+                else if (customers.get(0).getPatienceFactor() > 5 ) {
+                    customers.get(0).setPatienceFactor(customers.get(0).decreasePatienceFactor());
+                    //System.out.println("Customer " + event.getCustomerID() + " patience factor after: " + customers.get(0).getPatienceFactor() + "\n");
+                }
+                else{
+                    System.out.println("Customer "+ event.getCustomerID( )+" is very impatient.\n");
+                }
+
+
+
 
                 //placeholder time, create a formula for checkout time
-                eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT, currentTime + 5));
+                eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT, customers.get(0).getItems()*2+currentTime));
 
                 break;
 
@@ -136,22 +154,66 @@ public class Supermarket {
             case CUSTOMER_FINISH_CHECKOUT:
                 System.out.println("Customer " + event.getCustomerID() + " finished checkout");
 
+
                 int testRemove = event.getCustomerID();
                 eventQueue.remove(event);
-                
-                System.out.println("Customer "+testRemove+" was removed!");
+
+
+                System.out.println("Customer "+testRemove+" was removed from event queue!\n");
                 break;
 
             //when a customer changes lines, queue ready for checkout again
             //and REMOVE their existing finish_checkout event for the current cashier
             case CUSTOMER_CHANGE_LINE:
                 System.out.println("Customer " + event.getCustomerID() + " wants to change lines");
+                //remove customer from line, and add to cashier's line with shortest line using
+                //algorithm that we already have for shortest line.
+
+
+                /**
+                 * Change line conditional goes here
+                 */
+                    boolean changed = false;
+                    //take the shortest line and add current event to that line
+                    int minLineLength2 = cashiers.get(0).getLineLength();
+                    int chosenCashier2 = 0;
+
+                    for (Cashier c : cashiers) {
+                        if (c.getLineLength() < minLineLength2) {
+                            minLineLength2 = c.getLineLength();
+                            chosenCashier2 = cashiers.indexOf(c);
+                            changed = true;
+
+                        }
+
+
+                    }
+                    if (changed ) {
+                        cashiers.get(chosenCashier2).addCustomerToQueue(event.getCustomerID());
+                        eventQueue.remove(event); //remove current event (and customer) from current cashier
+                        System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
+                        //add customer to chosen cashier's line and remove from current cashier
+
+                    }
+                    else{
+                        System.out.println("Customer "+event.getCustomerID()+ " is in the shortest line!\n");
+
+                    }
+
+
+
                 break;
+
 
             //when a customer abandons the store, simply remove them from the simulation
             //and REMOVE their existing finish_checkout event
             case CUSTOMER_ABANDON:
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store");
+
+                int testRemove2 = event.getCustomerID();
+                eventQueue.remove(event);
+
+                System.out.println("Customer "+testRemove2+" abandoned the store!");
                 break;
         }
     }
