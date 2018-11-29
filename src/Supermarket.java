@@ -65,6 +65,29 @@ public class Supermarket {
         return customers;
     }
 
+    /**
+     * calculates the time it takes for a customer to check out
+     * @param c customer to calculate time for
+     * @return int time
+     */
+    private int checkoutTime(Customer c){
+        //update this with a better formula
+        return c.getItems() / 2;
+    }
+
+    /**
+     * calculates the time it takes for every customer in line at a cashier to check out
+     * @param c cashier to calculate time for
+     * @return int time
+     */
+    private int checkoutLineTime(Cashier c){
+        int totalTime = 0;
+        for(int id : c.getCustomers()){
+            totalTime += checkoutTime(customers.get(id));
+        }
+        return totalTime;
+    }
+
     public void run() {
         currentTime = 0;
         Event currentEvent;
@@ -145,8 +168,16 @@ public class Supermarket {
 
 
 
-                //placeholder time, create a formula for checkout time
-                eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT, customers.get(0).getItems()*2+currentTime));
+                //add finish checkout event after everyone else in line is done
+                eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT,
+                        checkoutTime(customers.get(event.getCustomerID()))+currentTime));
+
+                //print queue of current cashier to test
+                System.out.print("Queue of cashier " + chosenCashier + ": ");
+                for(int i : cashiers.get(chosenCashier).getCustomers()){
+                    System.out.print(i + ", ");
+                }
+                System.out.println("");
 
                 break;
 
