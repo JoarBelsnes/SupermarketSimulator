@@ -1,9 +1,11 @@
+import javafx.concurrent.Task;
+
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Supermarket {
+public class Supermarket extends Task<Void> {
     private int maxSimulationTime;
     private int numCustomers;
     private int numCashiers;
@@ -98,7 +100,7 @@ public class Supermarket {
         return totalTime;
     }
 
-    public void run() {
+    public Void call() {
         currentTime = 0;
         Event currentEvent;
 
@@ -113,13 +115,14 @@ public class Supermarket {
                     }
                 }
 
-                TimeUnit.SECONDS.sleep(1);
+                Thread.sleep(1000);
                 currentTime++;
             } catch (Exception e) {
                 e.printStackTrace();
             }
             System.out.println("Current System Time: " + currentTime + "\n");
         }
+        return null;
     }
 
     /***
