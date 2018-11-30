@@ -1,5 +1,8 @@
 
 import javafx.application.Application;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.beans.value.ChangeListener;
@@ -7,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.scene.Scene;
 import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
@@ -24,6 +28,10 @@ public class Gui extends Application {
 
 
     public void start(Stage primaryStage) {
+
+
+
+
 
         // Menu Bar
         MenuBar menuBar = new MenuBar();
@@ -65,6 +73,12 @@ public class Gui extends Application {
             "Random Assignment"
             );
 
+        //run button
+
+        Button runButton = new Button("Run Simulation");
+
+
+
         // Grid Pane
         GridPane grid = new GridPane();
         grid.setVgap(5);
@@ -80,11 +94,42 @@ public class Gui extends Application {
         // grid.add(txtNumberOfLimitedCheckoutLines, 1, 2);
         grid.add(lblMaxSimulationTime, 0, 3);
         grid.add(txtMaxSimulationTime, 1, 3);
-
+        grid.add(runButton,1,4);
         // Scene Settings
         VBox root = new VBox();
         root.getChildren().addAll(menuBar, grid);
         Scene primaryScene = new Scene(root, 600, 300);
+
+
+
+
+
+        //simulation scene
+        //array of cashiers
+        //array of customers
+
+        GridPane simulationPane = new GridPane();
+        simulationPane.setVgap(5);
+        simulationPane.setHgap(25);
+        simulationPane.setPadding(new Insets(5, 5, 5, 5));
+        Button runButton2 = new Button("Run Simulation");
+        Button back = new Button("Back");
+        simulationPane.add(back, 24,1);
+        simulationPane.add( runButton2, 1,1);
+
+        Canvas simulationCanvas = new Canvas(800, 400);
+        Group root2 = new Group();
+        root2.getChildren().addAll(simulationPane);
+
+
+        Scene simulationScene = new Scene(root2, 800, 400);
+
+
+
+
+
+
+
         // Stage Settings
         primaryStage.setTitle("Supermarket Simulator");
         primaryStage.setScene(primaryScene);
@@ -107,8 +152,30 @@ public class Gui extends Application {
             public void handle(ActionEvent t) {
                 Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
                 smart.run();
+
+
             }
         });
+        runButton.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t){
+                primaryStage.setScene(simulationScene);
+
+            }
+        });
+        runButton2.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t) {
+                Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                smart.run();
+            }
+
+        });
+        back.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent t) {
+                primaryStage.setScene(primaryScene);
+            }
+
+        });
+
 
         // Listeners
         // These Enforce only Integers in the text boxes
