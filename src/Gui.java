@@ -22,6 +22,8 @@ import javafx.scene.text.Text;
 import javafx.scene.control.TextField; 
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Gui extends Application {
 
 
@@ -106,7 +108,17 @@ public class Gui extends Application {
 
         //simulation scene
         //array of cashiers
+        ArrayList<Text> cashiers = new ArrayList<Text>();
+        int numberOfLines = 4;
         //array of customers
+        ArrayList<Text> Customers = new ArrayList<Text>();
+        ArrayList<Integer> numberOfCustomers = new ArrayList<Integer>();
+
+        numberOfCustomers.add(4);
+        numberOfCustomers.add(6);
+        numberOfCustomers.add(5);
+        numberOfCustomers.add(7);
+
 
         GridPane simulationPane = new GridPane();
         simulationPane.setVgap(5);
@@ -114,16 +126,31 @@ public class Gui extends Application {
         simulationPane.setPadding(new Insets(5, 5, 5, 5));
         Button runButton2 = new Button("Run Simulation");
         Button back = new Button("Back");
-        simulationPane.add(back, 24,1);
+        simulationPane.add(back, 5,1);
         simulationPane.add( runButton2, 1,1);
 
-        Canvas simulationCanvas = new Canvas(800, 400);
+
         Group root2 = new Group();
         root2.getChildren().addAll(simulationPane);
 
 
         Scene simulationScene = new Scene(root2, 800, 400);
 
+        //for loop to generate cashiers
+        for (int i = 0; i < numberOfLines; i++ ){
+            Text t = new Text("Line " + (i+1));
+            cashiers.add(t);
+            simulationPane.add(cashiers.get(i), (i+1)*2, 3);
+        }
+        for (int x = 0; x < numberOfCustomers.size(); x++){
+
+            for (int y = 0; y < numberOfCustomers.get(x)-1; y++){
+                Text c = new Text("Customer "+ (y+1));
+                Customers.add(c);
+
+                simulationPane.add(c,(x+1)*2,y+4);
+            }
+        }
 
 
 
