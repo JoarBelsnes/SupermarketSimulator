@@ -162,16 +162,24 @@ public class Gui extends Application {
         });
         runButton.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent t){
+                runButton2.setDisable(false);
                 primaryStage.setScene(simulationScene);
 
             }
         });
         runButton2.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent t) {
+                runButton2.setDisable(true);
                 Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
                 Thread martThread = new Thread(smart::call);
                 martThread.start();
-                }
+                back.setOnAction(new EventHandler<ActionEvent>(){
+                    public void handle(ActionEvent t) {
+                        martThread.stop();
+                        primaryStage.setScene(primaryScene);
+                    }
+                });
+            }
 
         });
         back.setOnAction(new EventHandler<ActionEvent>(){

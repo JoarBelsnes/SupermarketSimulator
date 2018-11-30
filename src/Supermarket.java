@@ -156,7 +156,8 @@ public class Supermarket extends Task<Void> {
                 }
                 //add customer to chosen cashier's line
                 cashiers.get(chosenCashier).addCustomerToQueue(event.getCustomerID());
-
+                //set customer's cashier choice
+                customers.get(event.getCustomerID()).setChosenCashier(chosenCashier);
                 //how to calculate when customer will finish checkout?
                 //what if they change lines?
 
@@ -193,13 +194,10 @@ public class Supermarket extends Task<Void> {
             //when a customer finishes checkout, simply remove them from the simulation
             case CUSTOMER_FINISH_CHECKOUT:
                 System.out.println("Customer " + event.getCustomerID() + " finished checkout");
-
-
-                int testRemove = event.getCustomerID();
                 eventQueue.remove(event);
-
-
-                System.out.println("Customer " + testRemove + " was removed from event queue!\n");
+                //remove customer from their checkout line
+                cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
+                System.out.println("Customer " + event.getCustomerID() + " was removed from event queue!\n");
                 break;
 
             //when a customer changes lines, queue ready for checkout again
@@ -229,6 +227,9 @@ public class Supermarket extends Task<Void> {
 
                 }
                 if (changed) {
+                    //remove from current line
+                    cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
+                    //add to new line
                     cashiers.get(chosenCashier2).addCustomerToQueue(event.getCustomerID());
                     eventQueue.remove(event); //remove current event (and customer) from current cashier
                     System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
@@ -248,10 +249,12 @@ public class Supermarket extends Task<Void> {
             case CUSTOMER_ABANDON:
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store");
 
-                int testRemove2 = event.getCustomerID();
+                //remove from checkout line
+                cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
+
                 eventQueue.remove(event);
 
-                System.out.println("Customer " + testRemove2 + " abandoned the store!");
+                System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
                 break;
         }
     }
