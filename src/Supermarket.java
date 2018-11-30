@@ -22,7 +22,7 @@ public class Supermarket {
         cashiers = new ArrayList<Cashier>(numCashiers);
 
         //populate cashiers list
-        for(int i = 0; i < numCashiers; i++){
+        for (int i = 0; i < numCashiers; i++) {
             cashiers.add(new Cashier());
         }
 
@@ -43,6 +43,14 @@ public class Supermarket {
             eventQueue.add(new Event(customer.getId(), type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
         }
 
+    }
+
+    public ArrayList<Cashier> getCashiers() {
+        return cashiers;
+    }
+
+    public ArrayList<Customer> getCustomers() {
+        return customers;
     }
 
     public PriorityQueue<Event> getEventQueue() {
@@ -67,22 +75,24 @@ public class Supermarket {
 
     /**
      * calculates the time it takes for a customer to check out
+     *
      * @param c customer to calculate time for
      * @return int time
      */
-    private int checkoutTime(Customer c){
+    private int checkoutTime(Customer c) {
         //update this with a better formula
         return c.getItems() / 2;
     }
 
     /**
      * calculates the time it takes for every customer in line at a cashier to check out
+     *
      * @param c cashier to calculate time for
      * @return int time
      */
-    private int checkoutLineTime(Cashier c){
+    private int checkoutLineTime(Cashier c) {
         int totalTime = 0;
-        for(int id : c.getCustomers()){
+        for (int id : c.getCustomers()) {
             totalTime += checkoutTime(customers.get(id));
         }
         return totalTime;
@@ -98,7 +108,7 @@ public class Supermarket {
                 while (eventQueue.size() > 0 && eventQueue.peek().getStartTime() == currentTime) {
                     //poll returns the event while removing it from the queue, use that to handle it
                     currentEvent = eventQueue.poll();
-                    if(currentEvent != null) {
+                    if (currentEvent != null) {
                         handleEvent(currentEvent);
                     }
                 }
@@ -108,7 +118,7 @@ public class Supermarket {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println("Current System Time: " + currentTime+"\n");
+            System.out.println("Current System Time: " + currentTime + "\n");
         }
     }
 
@@ -135,8 +145,8 @@ public class Supermarket {
 
                 int minLineLength = cashiers.get(0).getLineLength();
                 int chosenCashier = 0;
-                for(Cashier c : cashiers){
-                    if(c.getLineLength() < minLineLength){
+                for (Cashier c : cashiers) {
+                    if (c.getLineLength() < minLineLength) {
                         minLineLength = c.getLineLength();
                         chosenCashier = cashiers.indexOf(c);
                     }
@@ -154,27 +164,23 @@ public class Supermarket {
                  */
                 //System.out.println("Customer "+event.getCustomerID()+" patience factor before: "+customers.get(0).getPatienceFactor());
 
-                if((customers.get(0).getPatienceFactor() <= 5) && (customers.get(0).getPatienceFactor() >=1 )){
-                    eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_CHANGE_LINE, currentTime + 5 ));
-                }
-                else if (customers.get(0).getPatienceFactor() > 5 ) {
+                if ((customers.get(0).getPatienceFactor() <= 5) && (customers.get(0).getPatienceFactor() >= 1)) {
+                    eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_CHANGE_LINE, currentTime + 5));
+                } else if (customers.get(0).getPatienceFactor() > 5) {
                     customers.get(0).setPatienceFactor(customers.get(0).decreasePatienceFactor());
                     //System.out.println("Customer " + event.getCustomerID() + " patience factor after: " + customers.get(0).getPatienceFactor() + "\n");
+                } else {
+                    System.out.println("Customer " + event.getCustomerID() + " is very impatient.\n");
                 }
-                else{
-                    System.out.println("Customer "+ event.getCustomerID( )+" is very impatient.\n");
-                }
-
-
 
 
                 //add finish checkout event after everyone else in line is done
                 eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT,
-                        checkoutTime(customers.get(event.getCustomerID()))+currentTime));
+                        checkoutTime(customers.get(event.getCustomerID())) + currentTime));
 
                 //print queue of current cashier to test
                 System.out.print("Queue of cashier " + chosenCashier + ": ");
-                for(int i : cashiers.get(chosenCashier).getCustomers()){
+                for (int i : cashiers.get(chosenCashier).getCustomers()) {
                     System.out.print(i + ", ");
                 }
                 System.out.println("");
@@ -190,7 +196,7 @@ public class Supermarket {
                 eventQueue.remove(event);
 
 
-                System.out.println("Customer "+testRemove+" was removed from event queue!\n");
+                System.out.println("Customer " + testRemove + " was removed from event queue!\n");
                 break;
 
             //when a customer changes lines, queue ready for checkout again
@@ -204,33 +210,31 @@ public class Supermarket {
                 /**
                  * Change line conditional goes here
                  */
-                    boolean changed = false;
-                    //take the shortest line and add current event to that line
-                    int minLineLength2 = cashiers.get(0).getLineLength();
-                    int chosenCashier2 = 0;
+                boolean changed = false;
+                //take the shortest line and add current event to that line
+                int minLineLength2 = cashiers.get(0).getLineLength();
+                int chosenCashier2 = 0;
 
-                    for (Cashier c : cashiers) {
-                        if (c.getLineLength() < minLineLength2) {
-                            minLineLength2 = c.getLineLength();
-                            chosenCashier2 = cashiers.indexOf(c);
-                            changed = true;
-
-                        }
-
-
-                    }
-                    if (changed ) {
-                        cashiers.get(chosenCashier2).addCustomerToQueue(event.getCustomerID());
-                        eventQueue.remove(event); //remove current event (and customer) from current cashier
-                        System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
-                        //add customer to chosen cashier's line and remove from current cashier
-
-                    }
-                    else{
-                        System.out.println("Customer "+event.getCustomerID()+ " is in the shortest line!\n");
+                for (Cashier c : cashiers) {
+                    if (c.getLineLength() < minLineLength2) {
+                        minLineLength2 = c.getLineLength();
+                        chosenCashier2 = cashiers.indexOf(c);
+                        changed = true;
 
                     }
 
+
+                }
+                if (changed) {
+                    cashiers.get(chosenCashier2).addCustomerToQueue(event.getCustomerID());
+                    eventQueue.remove(event); //remove current event (and customer) from current cashier
+                    System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
+                    //add customer to chosen cashier's line and remove from current cashier
+
+                } else {
+                    System.out.println("Customer " + event.getCustomerID() + " is in the shortest line!\n");
+
+                }
 
 
                 break;
@@ -244,7 +248,7 @@ public class Supermarket {
                 int testRemove2 = event.getCustomerID();
                 eventQueue.remove(event);
 
-                System.out.println("Customer "+testRemove2+" abandoned the store!");
+                System.out.println("Customer " + testRemove2 + " abandoned the store!");
                 break;
         }
     }
