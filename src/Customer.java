@@ -4,6 +4,7 @@ import java.util.Random;
 public class Customer {
     private int id;
     private int items;
+    private int chosenCashier;
     private boolean willChange; //default to false
     private int patienceFactor; //between 0-10, lower the patience the higher chance to leave/change
 
@@ -42,6 +43,9 @@ public class Customer {
         this.patienceFactor = patienceFactor1;
     }
 
+    public void setChosenCashier(int chosenCashier) {
+        this.chosenCashier = chosenCashier;
+    }
 
     /* GETTERS */
     int getId() {
@@ -62,6 +66,10 @@ public class Customer {
         return willChange;
     }
 
+    public int getChosenCashier() {
+        return chosenCashier;
+    }
+
 
     //use this to determine patience level
     //decrease patience when called
@@ -79,4 +87,6 @@ public class Customer {
     int getPatienceFactor(){
         return patienceFactor;
     }
+
+
 }
