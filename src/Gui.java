@@ -142,8 +142,9 @@ public class Gui extends Application {
         runButton2.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent t) {
                 Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
-                smart.run();
-            }
+                Thread martThread = new Thread(smart::call);
+                martThread.start();
+                }
 
         });
         back.setOnAction(new EventHandler<ActionEvent>(){
