@@ -58,7 +58,7 @@ public class Customer {
 
     //returns time it takes to shop based on shopping list size and other factors
     int getShoppingTime() {
-        return items / 2;
+        return (items / 2) + 1;
     }
 
     //
