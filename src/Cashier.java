@@ -25,7 +25,11 @@ public class Cashier {
      * removes the customer with the specified ID from the queue
      * used for a customer changing lines or abandoning the store
      */
-    public void removeCustomerFromQueue(int id){
-        customers.remove(customers.indexOf(id));
+    public void removeCustomerFromQueue(int id) {
+        try {
+            customers.remove(customers.indexOf(id));
+        } catch (IndexOutOfBoundsException e) {
+
+        }
     }
 }

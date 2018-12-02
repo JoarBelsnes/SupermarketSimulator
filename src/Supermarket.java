@@ -1,6 +1,7 @@
 import javafx.concurrent.Task;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,8 @@ public class Supermarket extends Task<Void> {
     private int maxSimulationTime;
     private int numCustomers;
     private int numCashiers;
+    private int[] arrivalTimes;
+    private double meanTime;
     private PriorityQueue<Event> eventQueue;
     private ArrayList<Customer> customers;
     private ArrayList<Cashier> cashiers;
@@ -20,7 +23,9 @@ public class Supermarket extends Task<Void> {
         this.maxSimulationTime = maxSimulationTime;
         this.numCustomers = numCustomers;
         this.numCashiers = numCashiers;
-        customers = generateCustomers(numCustomers);
+        this.meanTime = maxSimulationTime / 4;
+        arrivalTimes = new int[numCustomers];
+        customers = generateCustomers();
         cashiers = new ArrayList<Cashier>(numCashiers);
 
         //populate cashiers list
@@ -40,9 +45,9 @@ public class Supermarket extends Task<Void> {
         });
 
         //add all customer arrivals to event queue
-        for (Customer customer : customers) {
+        for (int i = 0; i < numCustomers; i++) {
             //change random number to number generated with formula
-            eventQueue.add(new Event(customer.getId(), type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
+            eventQueue.add(new Event(i, type.CUSTOMER_ARRIVES, arrivalTimes[i]));
         }
 
     }
@@ -61,16 +66,27 @@ public class Supermarket extends Task<Void> {
 
     /***
      * generates an arraylist of customers of a specified size, with random size shopping lists
-     * @param numCustomers number of customers to enter the store
      * @return arraylist of all customers
      */
-    private ArrayList<Customer> generateCustomers(int numCustomers) {
+    private ArrayList<Customer> generateCustomers() {
         Random rand = new Random();
+
+        //generate arrival times exponentially
+        double u, x;
+        for(int i = 0; i < arrivalTimes.length; i++){
+            u = rand.nextDouble();
+            x = -meanTime * Math.log(1.0 - u); //natural log
+            arrivalTimes[i] = (int) (x);
+        }
+
+        for(int i : arrivalTimes){
+            System.out.print(i + ", ");
+        }
+
         ArrayList<Customer> customers = new ArrayList<>(numCustomers);
         for (int i = 0; i < numCustomers; i++) {
-            //items range from 1-50
-            //should there be a formula for items?
-            customers.add(new Customer(i, rand.nextInt(51)));
+            //items range from 1-20
+            customers.add(new Customer(i, rand.nextInt(20) + 1));
         }
         return customers;
     }
@@ -83,7 +99,7 @@ public class Supermarket extends Task<Void> {
      */
     private int checkoutTime(Customer c) {
         //update this with a better formula
-        return c.getItems() / 2;
+        return (c.getItems() / 3) + 5;
     }
 
     /**
@@ -179,8 +195,7 @@ public class Supermarket extends Task<Void> {
 
 
                 //add finish checkout event after everyone else in line is done
-                eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_FINISH_CHECKOUT,
-                        checkoutTime(customers.get(event.getCustomerID())) + currentTime));
+                addFinishCheckout(event.getCustomerID(),chosenCashier);
 
                 //print queue of current cashier to test
                 System.out.print("Queue of cashier " + chosenCashier + ": ");
@@ -228,12 +243,17 @@ public class Supermarket extends Task<Void> {
                 }
                 if (changed) {
                     //remove from current line
-                    cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
+                    cashiers.get(customers.get(event.getCustomerID())
+                            .getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
                     //add to new line
                     cashiers.get(chosenCashier2).addCustomerToQueue(event.getCustomerID());
-                    eventQueue.remove(event); //remove current event (and customer) from current cashier
+                    //remove current event
+                    eventQueue.remove(event);
                     System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
-                    //add customer to chosen cashier's line and remove from current cashier
+
+                    //remove current FINISH_CHECKOUT and add a new one
+                    removeFinishCheckout(event.getCustomerID());
+                    addFinishCheckout(event.getCustomerID(),chosenCashier2);
 
                 } else {
                     System.out.println("Customer " + event.getCustomerID() + " is in the shortest line!\n");
@@ -251,11 +271,34 @@ public class Supermarket extends Task<Void> {
 
                 //remove from checkout line
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
-
                 eventQueue.remove(event);
+
+                //remove the FINISH_CHECKOUT event
+                removeFinishCheckout(event.getCustomerID());
 
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
                 break;
+        }
+    }
+
+    private void addFinishCheckout(int customerID, int cashierID){
+        eventQueue.add(new Event(customerID, type.CUSTOMER_FINISH_CHECKOUT,
+                checkoutLineTime(cashiers.get(cashierID)) + currentTime));    }
+
+    /**
+     * removes the FINISH_CHECKOUT event for the specified customer
+     * used when changing lines or abandoning
+     * @param id of the customer leaving the line
+     */
+    private void removeFinishCheckout(int id){
+        try {
+            for (Event e : eventQueue) {
+                if (e.getCustomerID() == id && e.getEventType() == type.CUSTOMER_FINISH_CHECKOUT) {
+                    eventQueue.remove(e);
+                }
+            }
+        }catch (ConcurrentModificationException e){
+            //e.printStackTrace();
         }
     }
 
