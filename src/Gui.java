@@ -221,18 +221,36 @@ public class Gui extends Application {
                 runButton2.setDisable(true);
                 try {
                     Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
-                    Thread martThread = new Thread(smart::call);
+                    Thread martThread = new Thread(() -> {
+                        /**
+                         * INITIALIZE GUI HERE
+                         */
+
+                        try {
+                            for (int time = 0; time < smart.getMaxSimulationTime(); time++) {
+                                //step forward in time
+                                smart.step();
+
+                                /**
+                                 * UPDATE GUI HERE
+                                 */
+
+                                Thread.sleep(1000);
+
+                            }
+                        }catch (InterruptedException e){}
+                    });
                     martThread.start();
 
-                    runSimulation sim = new runSimulation(smart, simulationScene, simulationPane);
-                    Thread simThread = new Thread(sim::run);
-                    simThread.start();
+                    //runSimulation sim = new runSimulation(smart, simulationScene, simulationPane);
+                    //Thread simThread = new Thread(sim::run);
+                    //simThread.start();
 
 
                     back.setOnAction(new EventHandler<ActionEvent>() {
                         public void handle(ActionEvent t) {
                             martThread.stop();
-                            simThread.stop();
+                            //simThread.stop();
                             primaryStage.setScene(primaryScene);
                         }
                     });

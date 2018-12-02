@@ -1,12 +1,9 @@
-import javafx.concurrent.Task;
-
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
-public class Supermarket extends Task<Void> {
+public class Supermarket {
     private int maxSimulationTime;
     private int numCustomers;
     private int numCashiers;
@@ -15,6 +12,15 @@ public class Supermarket extends Task<Void> {
     private PriorityQueue<Event> eventQueue;
     private ArrayList<Customer> customers;
     private ArrayList<Cashier> cashiers;
+
+    public int getMaxSimulationTime() {
+        return maxSimulationTime;
+    }
+
+    public int getCurrentTime() {
+        return currentTime;
+    }
+
     private int currentTime = 0;
     private Random rand = new Random();
 
@@ -73,13 +79,13 @@ public class Supermarket extends Task<Void> {
 
         //generate arrival times exponentially
         double u, x;
-        for(int i = 0; i < arrivalTimes.length; i++){
+        for (int i = 0; i < arrivalTimes.length; i++) {
             u = rand.nextDouble();
             x = -meanTime * Math.log(1.0 - u); //natural log
             arrivalTimes[i] = (int) (x);
         }
 
-        for(int i : arrivalTimes){
+        for (int i : arrivalTimes) {
             System.out.print(i + ", ");
         }
 
@@ -116,29 +122,23 @@ public class Supermarket extends Task<Void> {
         return totalTime;
     }
 
-    public Void call() {
-        currentTime = 0;
+    public void step() {
         Event currentEvent;
-
-        while (currentTime < maxSimulationTime) {
-            try {
-                //handles event here
-                while (eventQueue.size() > 0 && eventQueue.peek().getStartTime() == currentTime) {
-                    //poll returns the event while removing it from the queue, use that to handle it
-                    currentEvent = eventQueue.poll();
-                    if (currentEvent != null) {
-                        handleEvent(currentEvent);
-                    }
+        try {
+            //handles event here
+            while (eventQueue.size() > 0 && eventQueue.peek().getStartTime() == currentTime) {
+                //poll returns the event while removing it from the queue, use that to handle it
+                currentEvent = eventQueue.poll();
+                if (currentEvent != null) {
+                    handleEvent(currentEvent);
                 }
-
-                Thread.sleep(1000);
-                currentTime++;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            System.out.println("Current System Time: " + currentTime + "\n");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        System.out.println("Current System Time: " + currentTime + "\n");
+        currentTime++;
     }
 
     /***
@@ -195,7 +195,7 @@ public class Supermarket extends Task<Void> {
 
 
                 //add finish checkout event after everyone else in line is done
-                addFinishCheckout(event.getCustomerID(),chosenCashier);
+                addFinishCheckout(event.getCustomerID(), chosenCashier);
 
                 //print queue of current cashier to test
                 System.out.print("Queue of cashier " + chosenCashier + ": ");
@@ -253,7 +253,7 @@ public class Supermarket extends Task<Void> {
 
                     //remove current FINISH_CHECKOUT and add a new one
                     removeFinishCheckout(event.getCustomerID());
-                    addFinishCheckout(event.getCustomerID(),chosenCashier2);
+                    addFinishCheckout(event.getCustomerID(), chosenCashier2);
 
                 } else {
                     System.out.println("Customer " + event.getCustomerID() + " is in the shortest line!\n");
@@ -281,23 +281,25 @@ public class Supermarket extends Task<Void> {
         }
     }
 
-    private void addFinishCheckout(int customerID, int cashierID){
+    private void addFinishCheckout(int customerID, int cashierID) {
         eventQueue.add(new Event(customerID, type.CUSTOMER_FINISH_CHECKOUT,
-                checkoutLineTime(cashiers.get(cashierID)) + currentTime));    }
+                checkoutLineTime(cashiers.get(cashierID)) + currentTime));
+    }
 
     /**
      * removes the FINISH_CHECKOUT event for the specified customer
      * used when changing lines or abandoning
+     *
      * @param id of the customer leaving the line
      */
-    private void removeFinishCheckout(int id){
+    private void removeFinishCheckout(int id) {
         try {
             for (Event e : eventQueue) {
                 if (e.getCustomerID() == id && e.getEventType() == type.CUSTOMER_FINISH_CHECKOUT) {
                     eventQueue.remove(e);
                 }
             }
-        }catch (ConcurrentModificationException e){
+        } catch (ConcurrentModificationException e) {
             //e.printStackTrace();
         }
     }
