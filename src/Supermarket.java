@@ -10,6 +10,8 @@ public class Supermarket extends Task<Void> {
     private int maxSimulationTime;
     private int numCustomers;
     private int numCashiers;
+    private int[] arrivalTimes;
+    private double meanTime;
     private PriorityQueue<Event> eventQueue;
     private ArrayList<Customer> customers;
     private ArrayList<Cashier> cashiers;
@@ -21,7 +23,9 @@ public class Supermarket extends Task<Void> {
         this.maxSimulationTime = maxSimulationTime;
         this.numCustomers = numCustomers;
         this.numCashiers = numCashiers;
-        customers = generateCustomers(numCustomers);
+        this.meanTime = maxSimulationTime / 4;
+        arrivalTimes = new int[numCustomers];
+        customers = generateCustomers();
         cashiers = new ArrayList<Cashier>(numCashiers);
 
         //populate cashiers list
@@ -41,9 +45,9 @@ public class Supermarket extends Task<Void> {
         });
 
         //add all customer arrivals to event queue
-        for (Customer customer : customers) {
+        for (int i = 0; i < numCustomers; i++) {
             //change random number to number generated with formula
-            eventQueue.add(new Event(customer.getId(), type.CUSTOMER_ARRIVES, rand.nextInt(maxSimulationTime + 1)));
+            eventQueue.add(new Event(i, type.CUSTOMER_ARRIVES, arrivalTimes[i]));
         }
 
     }
@@ -62,11 +66,23 @@ public class Supermarket extends Task<Void> {
 
     /***
      * generates an arraylist of customers of a specified size, with random size shopping lists
-     * @param numCustomers number of customers to enter the store
      * @return arraylist of all customers
      */
-    private ArrayList<Customer> generateCustomers(int numCustomers) {
+    private ArrayList<Customer> generateCustomers() {
         Random rand = new Random();
+
+        //generate arrival times exponentially
+        double u, x;
+        for(int i = 0; i < arrivalTimes.length; i++){
+            u = rand.nextDouble();
+            x = -meanTime * Math.log(1.0 - u); //natural log
+            arrivalTimes[i] = (int) (x);
+        }
+
+        for(int i : arrivalTimes){
+            System.out.print(i + ", ");
+        }
+
         ArrayList<Customer> customers = new ArrayList<>(numCustomers);
         for (int i = 0; i < numCustomers; i++) {
             //items range from 1-20
