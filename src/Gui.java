@@ -208,15 +208,20 @@ public class Gui extends Application {
         runButton2.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent t) {
                 runButton2.setDisable(true);
-                Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
-                Thread martThread = new Thread(smart::call);
-                martThread.start();
-                back.setOnAction(new EventHandler<ActionEvent>(){
-                    public void handle(ActionEvent t) {
-                        martThread.stop();
-                        primaryStage.setScene(primaryScene);
-                    }
-                });
+                try {
+                    Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                    Thread martThread = new Thread(smart::call);
+                    martThread.start();
+                    back.setOnAction(new EventHandler<ActionEvent>(){
+                        public void handle(ActionEvent t) {
+                            martThread.stop();
+                            primaryStage.setScene(primaryScene);
+                    }}); 
+                } catch (NumberFormatException ex) {
+                    Alert alert = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure none of the fields are blank.", ButtonType.OK);
+                    alert.showAndWait();
+                }
+            
             }
 
         });
