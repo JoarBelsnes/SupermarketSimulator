@@ -1,4 +1,9 @@
-
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.awt.Desktop;
+import java.io.*;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,6 +17,8 @@ import javafx.scene.Scene;
 import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button; 
@@ -21,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text; 
 import javafx.scene.control.TextField; 
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 
 public class Gui extends Application {
 
@@ -33,6 +41,13 @@ public class Gui extends Application {
         // Variables
         int customersInStore = 0;
 
+        // File Selector
+        FileChooser fileSelector = new FileChooser();
+        fileSelector.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileSelector.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Supermaket Settings", "*.mkt"),
+            new FileChooser.ExtensionFilter("Text Document", "*.txt")
+            );
 
         // Menu Bar
         MenuBar menuBar = new MenuBar();
@@ -40,10 +55,9 @@ public class Gui extends Application {
         Menu menuFile = new Menu("File");
         MenuItem menuFileNew = new MenuItem("New");
         MenuItem menuFileLoad = new MenuItem("Load");
-        MenuItem menuFileSave = new MenuItem("Save");
         MenuItem menuFileSaveAs = new MenuItem("Save As");
         MenuItem menuFileExit = new MenuItem("Exit");
-        menuFile.getItems().addAll(menuFileNew, menuFileLoad, menuFileSave, menuFileSaveAs, menuFileExit);
+        menuFile.getItems().addAll(menuFileNew, menuFileLoad, menuFileSaveAs, menuFileExit);
 
         menuBar.getMenus().addAll(menuFile);
 
@@ -133,6 +147,56 @@ public class Gui extends Application {
                 txtNumberOfCheckoutLines.setText("2");
             }
         });
+        menuFileLoad.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent t) {
+                File file = fileSelector.showOpenDialog(primaryStage);
+                if (file != null){
+                    BufferedReader br = null;
+                    try { 
+                            br = new BufferedReader(new FileReader(file));
+                            String line = br.readLine();
+                            String[] supermarketSettings = line.split(",");
+                            txtMaxSimulationTime.setText(supermarketSettings[0]);
+                            txtMaxCustomers.setText(supermarketSettings[1]);
+                            txtNumberOfCheckoutLines.setText(supermarketSettings[2]);
+                    } catch (FileNotFoundException ex) {
+                        ex.printStackTrace();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } catch (ArrayIndexOutOfBoundsException ex){
+                        Alert alert = new Alert(AlertType.ERROR, "The file you selected is not in the expected format.", ButtonType.OK);
+                        alert.showAndWait();
+                    } finally {
+                        if (br != null){
+                            try {
+                                br.close();
+                            } catch (IOException ex){
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+
+                }
+            }
+        });
+        menuFileSaveAs.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent t) {
+                fileSelector.setTitle("Save Settings");
+                File file = fileSelector.showSaveDialog(primaryStage);
+                if (file != null){
+                    try {
+                        FileWriter fileWriter = new FileWriter(file);
+                        fileWriter.write(txtMaxSimulationTime.getText() + "," + txtMaxCustomers.getText() + "," + txtNumberOfCheckoutLines.getText());
+                        fileWriter.close();
+                    } catch (IOException ex) {
+                        System.out.println (ex.getMessage());
+                    }
+
+                }
+            }
+        });
         runButton.setOnAction(new EventHandler<ActionEvent>(){
             public void handle(ActionEvent t){
                 runButton2.setDisable(false);
@@ -190,6 +254,8 @@ public class Gui extends Application {
             }
         });
     }
+
+
     public static void main(String[] args) {
         launch(args);
     }
