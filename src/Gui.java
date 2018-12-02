@@ -150,6 +150,7 @@ public class Gui extends Application {
         menuFileLoad.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent t) {
+                fileSelector.setTitle("Load Settings");
                 File file = fileSelector.showOpenDialog(primaryStage);
                 if (file != null){
                     BufferedReader br = null;
