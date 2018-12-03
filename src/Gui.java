@@ -312,6 +312,8 @@ public class Gui extends Application {
             public void handle(ActionEvent t) {
                 primaryStage.setScene(primaryScene);
                 simulationPane.getChildren().clear();
+                simulationPane.add(back, 5, 1);
+                simulationPane.add(runButton2, 1, 1);
             }
 
         });
