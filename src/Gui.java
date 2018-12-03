@@ -68,7 +68,7 @@ public class Gui extends Application {
         Text lblMaxCustomers = new Text("Max. Customers: ");
         Text lblNumberOfCheckoutLines = new Text("# of Checkout Lines: ");
         // Text lblNumberOfLimitedCheckoutLines = new Text("# of 'x Items or Less' Checkout Lines: ");
-        Text lblMaxSimulationTime = new Text("Max. Simulation Time: ");
+        Text lblMaxSimulationTime = new Text("Customer Arrival Window: ");
 
 
         // Creating Text Fields
@@ -233,8 +233,8 @@ public class Gui extends Application {
                             /**
                              * INITIALIZE GUI HERE
                              */
-
-                            for (int time = 0; time < smart.getMaxSimulationTime(); time++) {
+                            boolean end = false;
+                            while (!end) {
                                 //step forward in time
 
                                 if (smart.step()) {
@@ -288,6 +288,10 @@ public class Gui extends Application {
                                     Thread.sleep(1000);
                                 }catch(InterruptedException e){
 
+                                }
+
+                                if(smart.getEventQueue().isEmpty()){
+                                    end = true;
                                 }
 
                             }
@@ -358,8 +362,8 @@ public class Gui extends Application {
         /**
          * INITIALIZE GUI HERE
          */
-
-        for (int time = 0; time < s.getMaxSimulationTime(); time++) {
+        boolean end = false;
+        while(!end) {
             //step forward in time
 
             if (s.step()) {
@@ -398,6 +402,9 @@ public class Gui extends Application {
             }
             System.out.println("CODE UPDATED");
 
+            if(s.getEventQueue().isEmpty()){
+                end = true;
+            }
         }
 
     }
