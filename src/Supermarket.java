@@ -122,8 +122,9 @@ public class Supermarket {
         return totalTime;
     }
 
-    public void step() {
+    public boolean step() {
         Event currentEvent;
+        boolean eventFound = false;
         try {
             //handles event here
             while (eventQueue.size() > 0 && eventQueue.peek().getStartTime() == currentTime) {
@@ -131,6 +132,7 @@ public class Supermarket {
                 currentEvent = eventQueue.poll();
                 if (currentEvent != null) {
                     handleEvent(currentEvent);
+                    eventFound = true;
                 }
             }
 
@@ -139,6 +141,7 @@ public class Supermarket {
         }
         System.out.println("Current System Time: " + currentTime + "\n");
         currentTime++;
+        return eventFound;
     }
 
     /***
