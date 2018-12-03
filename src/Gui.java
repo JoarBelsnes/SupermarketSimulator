@@ -107,6 +107,7 @@ public class Gui extends Application {
 
 
         GridPane simulationPane = new GridPane();
+        simulationPane.setId("SimulationPane");
         simulationPane.setVgap(5);
         simulationPane.setHgap(25);
         simulationPane.setPadding(new Insets(5, 5, 5, 5));
@@ -121,6 +122,7 @@ public class Gui extends Application {
 
 
         Scene simulationScene = new Scene(root2, 800, 400);
+        simulationScene.getStylesheets().add("simulation.css");
         /**
          //for loop to generate cashiers
          for (int i = 0; i < numberOfLines; i++ ){
@@ -242,33 +244,34 @@ public class Gui extends Application {
                                      * UPDATE GUI HERE
                                      */
 
-                                    if (Platform.isFxApplicationThread()) {
+                                    /**if (Platform.isFxApplicationThread()) {
                                         System.out.println("IS AN FX APPLICATION THREAD");
                                     } else {
                                         System.out.println("IS AN FX APPLICATION THREAD");
                                     }
-
+                                    **/
                                     cashiers = smart.getCashiers();
                                     //generates the cashiers
 
 
                                     for (int i = 0; i < cashiers.size(); i++) {
                                         Text g = new Text("Line Length: " + cashiers.get(i).getLineLength());
+                                        g.setId("Cashiers");
                                         cashiersLabel.add(g);
                                         int count = i;
                                         int lineLength = cashiers.get(count).getLineLength();
                                         if (!simulationPane.getChildren().contains(cashiersLabel.get(i))) {
-                                           Platform.runLater(()-> simulationPane.add(cashiersLabel.get(count), (count), 3));
+                                            Platform.runLater(() -> simulationPane.add(cashiersLabel.get(count), (count), 3));
 
                                         } else {
                                             //updates customer text
-                                            Platform.runLater(()->cashiersLabel.get(count).setText("Line Length: " + lineLength));
+                                            Platform.runLater(() -> cashiersLabel.get(count).setText("Line Length: " + lineLength));
                                         }
                                         //generate customer line
                                     }
 
                                     if (Customers.size() != 0) {
-                                        Platform.runLater(()-> simulationPane.getChildren().removeAll(Customers));
+                                        Platform.runLater(() -> simulationPane.getChildren().removeAll(Customers));
                                     }
 
                                     //generate the customer objects
@@ -276,17 +279,18 @@ public class Gui extends Application {
 
                                         for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
                                             Text c = new Text("Customer " + cashiers.get(z).getCustomers().get(y));
+                                            c.setId("Customers");
                                             Customers.add(c);
                                             int number = z;
                                             int number02 = y;
-                                            Platform.runLater(()->simulationPane.add(c, number, number02 + 4));
+                                            Platform.runLater(() -> simulationPane.add(c, number, number02 + 4));
                                         }
                                     }
                                 }
-                                System.out.println("CODE UPDATED");
+                                //System.out.println("CODE UPDATED");
                                 try {
                                     Thread.sleep(1000);
-                                }catch(InterruptedException e){
+                                } catch (InterruptedException e) {
 
                                 }
 
@@ -307,7 +311,9 @@ public class Gui extends Application {
         back.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 primaryStage.setScene(primaryScene);
-
+            simulationPane.getChildren().clear();
+                simulationPane.add(back, 5, 1);
+                simulationPane.add(runButton2, 1, 1);
             }
 
         });
@@ -349,58 +355,6 @@ public class Gui extends Application {
     }
 
 
-    public static void runSimulation(Supermarket s, Scene x, GridPane g) {
-        ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
-        ArrayList<Text> cashiersLabel = new ArrayList<Text>();
-        ArrayList<Text> Customers = new ArrayList<Text>();
-
-
-        /**
-         * INITIALIZE GUI HERE
-         */
-
-        for (int time = 0; time < s.getMaxSimulationTime(); time++) {
-            //step forward in time
-
-            if (s.step()) {
-                /**
-                 * UPDATE GUI HERE
-                 */
-
-
-                cashiers = s.getCashiers();
-                //generates the cashiers
-
-
-                for (int i = 0; i < cashiers.size(); i++) {
-                    Text t = new Text("Line Length: " + cashiers.get(i).getLineLength());
-                    cashiersLabel.add(t);
-                    if (!g.getChildren().contains(cashiersLabel.get(i))) {
-                        g.add(cashiersLabel.get(i), (i), 3);
-                    } else {
-                        //updates customer text
-                        cashiersLabel.get(i).setText("Line Length: " + cashiers.get(i).getLineLength());
-                    }
-                    //generate customer line
-                }
-
-
-                //generate the customer objects
-                for (int z = 0; z < cashiers.size(); z++) {
-
-                    for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
-                        Text c = new Text("Customer " + cashiers.get(z).getCustomers().get(y));
-                        Customers.add(c);
-
-                        g.add(c, z, y + 4);
-                    }
-                }
-            }
-            System.out.println("CODE UPDATED");
-
-        }
-
-    }
 }
 
 
