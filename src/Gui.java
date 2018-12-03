@@ -140,7 +140,6 @@ public class Gui extends Application {
          **/
 
 
-
         // Stage Settings
         primaryStage.setTitle("Supermarket Simulator");
         primaryStage.setScene(primaryScene);
@@ -220,29 +219,95 @@ public class Gui extends Application {
         runButton2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 runButton2.setDisable(true);
-                try {
-                    Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
-                    runSimulation simulation = new runSimulation(smart, simulationScene, simulationPane);
+                new Thread() {
+                    public void run() {
+                        try {
+                            Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                            //runSimulation(smart, simulationScene, simulationPane);
+
+                            ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
+                            ArrayList<Text> cashiersLabel = new ArrayList<Text>();
+                            ArrayList<Text> Customers = new ArrayList<Text>();
 
 
-                            simulation.run();
+                            /**
+                             * INITIALIZE GUI HERE
+                             */
+
+                            for (int time = 0; time < smart.getMaxSimulationTime(); time++) {
+                                //step forward in time
+
+                                if (smart.step()) {
+                                    /**
+                                     * UPDATE GUI HERE
+                                     */
+
+                                    if (Platform.isFxApplicationThread()) {
+                                        System.out.println("IS AN FX APPLICATION THREAD");
+                                    } else {
+                                        System.out.println("IS AN FX APPLICATION THREAD");
+                                    }
+
+                                    cashiers = smart.getCashiers();
+                                    //generates the cashiers
 
 
+                                    for (int i = 0; i < cashiers.size(); i++) {
+                                        Text g = new Text("Line Length: " + cashiers.get(i).getLineLength());
+                                        cashiersLabel.add(g);
+                                        int count = i;
+                                        int lineLength = cashiers.get(count).getLineLength();
+                                        if (!simulationPane.getChildren().contains(cashiersLabel.get(i))) {
+                                           Platform.runLater(()-> simulationPane.add(cashiersLabel.get(count), (count), 3));
+
+                                        } else {
+                                            //updates customer text
+                                            Platform.runLater(()->cashiersLabel.get(count).setText("Line Length: " + lineLength));
+                                        }
+                                        //generate customer line
+                                    }
+
+                                    if (Customers.size() != 0) {
+                                        Platform.runLater(()-> simulationPane.getChildren().removeAll(Customers));
+                                    }
+
+                                    //generate the customer objects
+                                    for (int z = 0; z < cashiers.size(); z++) {
+
+                                        for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
+                                            Text c = new Text("Customer " + cashiers.get(z).getCustomers().get(y));
+                                            Customers.add(c);
+                                            int number = z;
+                                            int number02 = y;
+                                            Platform.runLater(()->simulationPane.add(c, number, number02 + 4));
+                                        }
+                                    }
+                                }
+                                System.out.println("CODE UPDATED");
+                                try {
+                                    Thread.sleep(1000);
+                                }catch(InterruptedException e){
+
+                                }
+
+                            }
 
 
-                } catch (NumberFormatException ex) {
-                    Alert alert = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure none of the fields are blank.", ButtonType.OK);
-                    alert.showAndWait();
-                }
-            }});
+                        } catch (NumberFormatException ex) {
+                            Alert alert = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure none of the fields are blank.", ButtonType.OK);
+                            alert.showAndWait();
+                        }
+                    }
+                }.start();
+            }
 
-
-
+        });
 
 
         back.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 primaryStage.setScene(primaryScene);
+
             }
 
         });
@@ -274,6 +339,8 @@ public class Gui extends Application {
                 }
             }
         });
+
+
     }
 
 
@@ -282,37 +349,20 @@ public class Gui extends Application {
     }
 
 
-    public class runSimulation implements Runnable {
-        Supermarket s;
-        Scene x;
-        GridPane g;
+    public static void runSimulation(Supermarket s, Scene x, GridPane g) {
         ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
         ArrayList<Text> cashiersLabel = new ArrayList<Text>();
         ArrayList<Text> Customers = new ArrayList<Text>();
 
-        runSimulation(Supermarket s, Scene x, GridPane g) {
-            this.s = s;
-            this.x = x;
-            this.g = g;
-        }
 
         /**
          * INITIALIZE GUI HERE
          */
 
+        for (int time = 0; time < s.getMaxSimulationTime(); time++) {
+            //step forward in time
 
-
-
-
-
-        
-        public void run() {
-
-
-            for (int time = 0; time < s.getMaxSimulationTime(); time++) {
-                //step forward in time
-
-
+            if (s.step()) {
                 /**
                  * UPDATE GUI HERE
                  */
@@ -320,6 +370,8 @@ public class Gui extends Application {
 
                 cashiers = s.getCashiers();
                 //generates the cashiers
+
+
                 for (int i = 0; i < cashiers.size(); i++) {
                     Text t = new Text("Line Length: " + cashiers.get(i).getLineLength());
                     cashiersLabel.add(t);
@@ -333,30 +385,25 @@ public class Gui extends Application {
                 }
 
 
-
-
-
                 //generate the customer objects
-                for (int x = 0; x < cashiers.size(); x++){
+                for (int z = 0; z < cashiers.size(); z++) {
 
-                    for (int y = 0; y < cashiers.get(x).getLineLength(); y++){
-                        Text c = new Text("Customer "+  cashiers.get(x).getCustomers().get(y));
+                    for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
+                        Text c = new Text("Customer " + cashiers.get(z).getCustomers().get(y));
                         Customers.add(c);
 
-                        g.add(c,x ,y+4);
+                        g.add(c, z, y + 4);
                     }
                 }
-
-
-                System.out.println("CODE UPDATED");
-                s.step();
             }
+            System.out.println("CODE UPDATED");
+
         }
 
-            };
+    }
+}
 
 
-            }
 
 
 
