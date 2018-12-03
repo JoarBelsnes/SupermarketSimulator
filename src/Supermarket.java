@@ -105,7 +105,7 @@ public class Supermarket {
      */
     private int checkoutTime(Customer c) {
         //update this with a better formula
-        return (c.getItems() / 3) + 5;
+        return (c.getItems() / 4) + 1;
     }
 
     /**
