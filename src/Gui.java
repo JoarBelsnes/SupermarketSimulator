@@ -107,6 +107,7 @@ public class Gui extends Application {
 
 
         GridPane simulationPane = new GridPane();
+        simulationPane.setId("SimulationPane");
         simulationPane.setVgap(5);
         simulationPane.setHgap(25);
         simulationPane.setPadding(new Insets(5, 5, 5, 5));
@@ -254,7 +255,9 @@ public class Gui extends Application {
 
                                     for (int i = 0; i < cashiers.size(); i++) {
                                         Text g = new Text("Line Length: " + cashiers.get(i).getLineLength());
+                                        g.setId("Cashiers");
                                         cashiersLabel.add(g);
+
                                         int count = i;
                                         int lineLength = cashiers.get(count).getLineLength();
                                         if (!simulationPane.getChildren().contains(cashiersLabel.get(i))) {
@@ -276,6 +279,7 @@ public class Gui extends Application {
 
                                         for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
                                             Text c = new Text("Customer " + cashiers.get(z).getCustomers().get(y));
+                                            c.setId("Customers");
                                             Customers.add(c);
                                             int number = z;
                                             int number02 = y;
@@ -307,7 +311,7 @@ public class Gui extends Application {
         back.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 primaryStage.setScene(primaryScene);
-
+                simulationPane.getChildren().clear();
             }
 
         });

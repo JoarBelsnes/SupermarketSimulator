@@ -1,4 +1,6 @@
-
+.root2{
+    -fx-background-color: black;
+}
 #Cashiers {
     -fx-font-family: helvetica;
     -fx-font-size: 20px;
@@ -11,6 +13,6 @@
     -fx-text-fill: white;
 }
 #SimulationPane {
-    -fx-background-color: white;
+
 }
 
