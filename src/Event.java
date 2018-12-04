@@ -3,6 +3,12 @@ enum type {
     CUSTOMER_CHANGE_LINE, CUSTOMER_ABANDON
 }
 
+/**
+ * class representing a discrete event
+ * contains info on the event type, related customer's ID, and the event start time
+ * used in supermarket class' event handler
+ * contributors: Liam
+ */
 public class Event {
     private type eventType;
     private int startTime;

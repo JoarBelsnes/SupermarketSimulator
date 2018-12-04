@@ -3,8 +3,15 @@ import java.util.ConcurrentModificationException;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+/**
+ * class representing a supermarket, controls the entire simulation
+ * contains all customers, cashiers, and events
+ * has a priority queue of events based on start time,
+ * and handles events according to type
+ * contributors: Liam, Jae
+ */
 public class Supermarket {
-    private int maxSimulationTime;
+    private int arrivalWindow;
     private int numCustomers;
     private int numCashiers;
     private int[] arrivalTimes;
@@ -13,8 +20,8 @@ public class Supermarket {
     private ArrayList<Customer> customers;
     private ArrayList<Cashier> cashiers;
 
-    public int getMaxSimulationTime() {
-        return maxSimulationTime;
+    public int getArrivalWindow() {
+        return arrivalWindow;
     }
 
     public int getCurrentTime() {
@@ -22,14 +29,13 @@ public class Supermarket {
     }
 
     private int currentTime = 0;
-    private Random rand = new Random();
 
     //constructor
-    public Supermarket(int maxSimulationTime, int numCustomers, int numCashiers) {
-        this.maxSimulationTime = maxSimulationTime;
+    public Supermarket(int arrivalWindow, int numCustomers, int numCashiers) {
+        this.arrivalWindow = arrivalWindow;
         this.numCustomers = numCustomers;
         this.numCashiers = numCashiers;
-        this.meanTime = maxSimulationTime / 4;
+        this.meanTime = arrivalWindow / 4;
         arrivalTimes = new int[numCustomers];
         customers = generateCustomers();
         cashiers = new ArrayList<Cashier>(numCashiers);
@@ -52,11 +58,12 @@ public class Supermarket {
 
         //add all customer arrivals to event queue
         for (int i = 0; i < numCustomers; i++) {
-            //change random number to number generated with formula
             eventQueue.add(new Event(i, type.CUSTOMER_ARRIVES, arrivalTimes[i]));
         }
 
     }
+
+    // getters
 
     public ArrayList<Cashier> getCashiers() {
         return cashiers;
@@ -73,6 +80,7 @@ public class Supermarket {
     /***
      * generates an arraylist of customers of a specified size, with random size shopping lists
      * @return arraylist of all customers
+     * contributors: Liam
      */
     private ArrayList<Customer> generateCustomers() {
         Random rand = new Random();
@@ -99,9 +107,9 @@ public class Supermarket {
 
     /**
      * calculates the time it takes for a customer to check out
-     *
      * @param c customer to calculate time for
      * @return int time
+     * contributors: Liam
      */
     private int checkoutTime(Customer c) {
         //update this with a better formula
@@ -110,9 +118,9 @@ public class Supermarket {
 
     /**
      * calculates the time it takes for every customer in line at a cashier to check out
-     *
      * @param c cashier to calculate time for
      * @return int time
+     * contributors: Liam
      */
     private int checkoutLineTime(Cashier c) {
         int totalTime = 0;
@@ -122,6 +130,12 @@ public class Supermarket {
         return totalTime;
     }
 
+    /**
+     * steps forward one unit of time in the simulation
+     * if events are found at the new time, handle all of them
+     * @return true if there are any events at the new time
+     * contributors: Liam
+     */
     public boolean step() {
         Event currentEvent;
         boolean eventFound = false;
@@ -147,6 +161,7 @@ public class Supermarket {
     /***
      * handles events, based on the event type
      * @param event the event to handle
+     * contributors: Liam, Jae
      */
     private void handleEvent(Event event) {
         switch (event.getEventType()) {
@@ -177,16 +192,8 @@ public class Supermarket {
                 cashiers.get(chosenCashier).addCustomerToQueue(event.getCustomerID());
                 //set customer's cashier choice
                 customers.get(event.getCustomerID()).setChosenCashier(chosenCashier);
-                //how to calculate when customer will finish checkout?
-                //what if they change lines?
 
-                //Algorithm here for customer abandon store/line
-
-                /**
-                 * If customer changes line, reset customer checkoutTime to formula
-                 */
-                //System.out.println("Customer "+event.getCustomerID()+" patience factor before: "+customers.get(0).getPatienceFactor());
-
+                //If customer changes line, reset customer checkoutTime to formula
                 if ((customers.get(0).getPatienceFactor() <= 5) && (customers.get(0).getPatienceFactor() >= 1)) {
                     eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_CHANGE_LINE, currentTime + 5));
                 } else if (customers.get(0).getPatienceFactor() > 5) {
@@ -195,7 +202,6 @@ public class Supermarket {
                 } else {
                     System.out.println("Customer " + event.getCustomerID() + " is very impatient.\n");
                 }
-
 
                 //add finish checkout event after everyone else in line is done
                 addFinishCheckout(event.getCustomerID(), chosenCashier);
@@ -225,23 +231,17 @@ public class Supermarket {
                 //remove customer from line, and add to cashier's line with shortest line using
                 //algorithm that we already have for shortest line.
 
-
-                /**
-                 * Change line conditional goes here
-                 */
+                //flag to determine whether customer actually changes lines when they want to
                 boolean changed = false;
                 //take the shortest line and add current event to that line
                 int minLineLength2 = cashiers.get(0).getLineLength();
                 int chosenCashier2 = 0;
-
                 for (Cashier c : cashiers) {
                     if (c.getLineLength() < minLineLength2) {
                         minLineLength2 = c.getLineLength();
                         chosenCashier2 = cashiers.indexOf(c);
                         changed = true;
-
                     }
-
 
                 }
                 if (changed) {
@@ -253,37 +253,36 @@ public class Supermarket {
                     //remove current event
                     eventQueue.remove(event);
                     System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
-
                     //remove current FINISH_CHECKOUT and add a new one
                     removeFinishCheckout(event.getCustomerID());
                     addFinishCheckout(event.getCustomerID(), chosenCashier2);
-
                 } else {
                     System.out.println("Customer " + event.getCustomerID() + " is in the shortest line!\n");
 
                 }
-
-
                 break;
-
 
             //when a customer abandons the store, simply remove them from the simulation
             //and REMOVE their existing finish_checkout event
             case CUSTOMER_ABANDON:
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store");
-
                 //remove from checkout line
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
                 eventQueue.remove(event);
-
                 //remove the FINISH_CHECKOUT event
                 removeFinishCheckout(event.getCustomerID());
-
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
                 break;
         }
     }
 
+    /**
+     * adds a new CUSTOMER_FINISH_CHECKOUT event to the queue
+     * used after changing lines, for the new line
+     * @param customerID customer who changed lines
+     * @param cashierID cashier that customer changed to
+     * contributors: Liam
+     */
     private void addFinishCheckout(int customerID, int cashierID) {
         eventQueue.add(new Event(customerID, type.CUSTOMER_FINISH_CHECKOUT,
                 checkoutLineTime(cashiers.get(cashierID)) + currentTime));
@@ -292,8 +291,8 @@ public class Supermarket {
     /**
      * removes the FINISH_CHECKOUT event for the specified customer
      * used when changing lines or abandoning
-     *
      * @param id of the customer leaving the line
+     * contributors: Liam
      */
     private void removeFinishCheckout(int id) {
         try {
@@ -302,11 +301,13 @@ public class Supermarket {
                     eventQueue.remove(e);
                 }
             }
-        } catch (ConcurrentModificationException e) {
-            //e.printStackTrace();
-        }
+        } catch (ConcurrentModificationException e) {}
     }
 
+    /**
+     * adds an event to the queue
+     * @param e event to add
+     */
     public void addEventToQueue(Event e) {
         eventQueue.add(e);
     }

@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * class representing a cashier at the supermarket
+ * contains an arraylist of customer ID's representing the checkout line
+ * contributors: Liam
+ */
 public class Cashier {
     //the checkout line is an arraylist of customer IDs
     //that can be identified by the supermarket
@@ -17,6 +22,10 @@ public class Cashier {
         return customers.size();
     }
 
+    /**
+     * adds a customer at the back of the line
+     * @param c customer to add
+     */
     public void addCustomerToQueue(int c) {
         customers.add(c);
     }
@@ -28,8 +37,6 @@ public class Cashier {
     public void removeCustomerFromQueue(int id) {
         try {
             customers.remove(customers.indexOf(id));
-        } catch (IndexOutOfBoundsException e) {
-
-        }
+        } catch (IndexOutOfBoundsException e) {}
     }
 }

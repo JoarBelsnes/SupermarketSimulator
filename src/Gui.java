@@ -1,40 +1,28 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.awt.Desktop;
-import java.io.*;
-
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.*;
-import javafx.scene.Scene;
-import javafx.scene.*;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.VBox;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button; 
-import javafx.scene.layout.GridPane; 
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text; 
-import javafx.scene.control.TextField; 
-import javafx.stage.Stage;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * class containing the GUI and acting as the runnable
+ * has a supermarket instance and runs the simulation using it
+ * contributors: Andrew, Joshua, Liam
+ */
 public class Gui extends Application {
 
 
@@ -75,7 +63,7 @@ public class Gui extends Application {
         TextField txtMaxCustomers = new TextField();
         TextField txtNumberOfCheckoutLines = new TextField();
         // TextField txtNumberOfLimitedCheckoutLines = new TextField();
-        TextField txtMaxSimulationTime = new TextField();
+        TextField txtArrivalWindow = new TextField();
 
         //run button
 
@@ -94,7 +82,7 @@ public class Gui extends Application {
         // grid.add(lblNumberOfLimitedCheckoutLines, 0, 2);
         // grid.add(txtNumberOfLimitedCheckoutLines, 1, 2);
         grid.add(lblMaxSimulationTime, 0, 3);
-        grid.add(txtMaxSimulationTime, 1, 3);
+        grid.add(txtArrivalWindow, 1, 3);
         grid.add(runButton, 1, 4);
         // Scene Settings
         VBox root = new VBox();
@@ -154,7 +142,7 @@ public class Gui extends Application {
         menuFileNew.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 txtMaxCustomers.setText("10");
-                txtMaxSimulationTime.setText("50");
+                txtArrivalWindow.setText("50");
                 txtNumberOfCheckoutLines.setText("2");
             }
         });
@@ -169,7 +157,7 @@ public class Gui extends Application {
                         br = new BufferedReader(new FileReader(file));
                         String line = br.readLine();
                         String[] supermarketSettings = line.split(",");
-                        txtMaxSimulationTime.setText(supermarketSettings[0]);
+                        txtArrivalWindow.setText(supermarketSettings[0]);
                         txtMaxCustomers.setText(supermarketSettings[1]);
                         txtNumberOfCheckoutLines.setText(supermarketSettings[2]);
                     } catch (FileNotFoundException ex) {
@@ -200,7 +188,7 @@ public class Gui extends Application {
                 if (file != null) {
                     try {
                         FileWriter fileWriter = new FileWriter(file);
-                        fileWriter.write(txtMaxSimulationTime.getText() + "," + txtMaxCustomers.getText() + "," + txtNumberOfCheckoutLines.getText());
+                        fileWriter.write(txtArrivalWindow.getText() + "," + txtMaxCustomers.getText() + "," + txtNumberOfCheckoutLines.getText());
                         fileWriter.close();
                     } catch (IOException ex) {
                         System.out.println(ex.getMessage());
@@ -216,13 +204,19 @@ public class Gui extends Application {
 
             }
         });
+
+        /**
+         * run button on the simulation screen.
+         * when clicked, runs the simulation with the specified settings
+         * contributors: Andrew, Liam
+         */
         runButton2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 runButton2.setDisable(true);
                 new Thread() {
                     public void run() {
                         try {
-                            Supermarket smart = new Supermarket(Integer.parseInt(txtMaxSimulationTime.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                            Supermarket smart = new Supermarket(Integer.parseInt(txtArrivalWindow.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
                             //runSimulation(smart, simulationScene, simulationPane);
 
                             ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
@@ -241,12 +235,6 @@ public class Gui extends Application {
                                     /**
                                      * UPDATE GUI HERE
                                      */
-
-                                    if (Platform.isFxApplicationThread()) {
-                                        System.out.println("IS AN FX APPLICATION THREAD");
-                                    } else {
-                                        System.out.println("IS AN FX APPLICATION THREAD");
-                                    }
 
                                     cashiers = smart.getCashiers();
                                     //generates the cashiers
@@ -283,7 +271,13 @@ public class Gui extends Application {
                                         }
                                     }
                                 }
-                                System.out.println("CODE UPDATED");
+                                //System.out.println("CODE UPDATED");
+
+                                System.out.println("Current events in queue:");
+                                for(Event e : smart.getEventQueue()){
+                                    System.out.print(e.getEventType() + ", ");
+                                }
+
                                 try {
                                     Thread.sleep(1000);
                                 }catch(InterruptedException e){
@@ -335,11 +329,11 @@ public class Gui extends Application {
                 }
             }
         });
-        txtMaxSimulationTime.textProperty().addListener(new ChangeListener<String>() {
+        txtArrivalWindow.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (!newValue.matches("\\d*")) {
-                    txtMaxSimulationTime.setText(newValue.replaceAll("[^\\d]", ""));
+                    txtArrivalWindow.setText(newValue.replaceAll("[^\\d]", ""));
                 }
             }
         });

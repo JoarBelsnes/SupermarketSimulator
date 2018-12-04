@@ -1,6 +1,12 @@
 import java.util.Random;
 
-
+/**
+ * class representing a customer of the supermarket
+ * has a (ideally unique) ID, and number of items
+ * keeps track of its chosen cashier and whether it will change lines
+ * based on patience factor and time in line
+ * contributors: Jae, Liam
+ */
 public class Customer {
     private int id;
     private int items;
@@ -56,12 +62,19 @@ public class Customer {
         return items;
     }
 
-    //returns time it takes to shop based on shopping list size and other factors
+    /**
+     * calculates shopping time based on the number of items to buy
+     * @return time spent shopping
+     * contributors: Liam
+     */
     int getShoppingTime() {
         return (items / 2) + 1;
     }
 
-    //
+    /**
+     * @return whether the customer will change lines
+     * contributors: Jae
+     */
     boolean getWillChange() {
         return willChange;
     }
@@ -73,17 +86,20 @@ public class Customer {
 
     //use this to determine patience level
     //decrease patience when called
+
+    /**
+     * decreases patience level
+     * @return new patience level
+     * contributors: Jae
+     */
     int decreasePatienceFactor() {
         if (patienceFactor >= 2) {
             patienceFactor--;
-            return patienceFactor;
         }
-        else {
-            return patienceFactor;
-        }
+        return patienceFactor;
     }
 
-    //returns only the patience factor
+    //only returns the patience factor
     int getPatienceFactor(){
         return patienceFactor;
     }
