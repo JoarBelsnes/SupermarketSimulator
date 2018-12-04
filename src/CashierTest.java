@@ -15,22 +15,14 @@ class CashierTest {
 
     }
 
-    /*
     @Test
-    void checkOutNext() {
+    void removeCustomerFromQueue() {
         Cashier testCashier = new Cashier();
-        Customer c1 = new Customer(0,1);
-        Customer c2 = new Customer(1,2);
+        Customer testCustomer = new Customer(0, 10);
+        testCashier.addCustomerToQueue(testCustomer.getId());
+        testCashier.removeCustomerFromQueue(testCustomer.getId());
 
-        testCashier.addCustomerToQueue(c1);
-        testCashier.addCustomerToQueue(c2);
-
-        assertAll("checkoutTimes",
-                () -> assertEquals(testCashier.checkOutNext(),c1.getItems()),
-                () -> assertEquals(testCashier.checkOutNext(),c2.getItems())
-        );
-
+        assertEquals(testCashier.getLineLength(), 0);
     }
-    */
 
 }

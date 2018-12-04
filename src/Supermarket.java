@@ -13,7 +13,6 @@ import java.util.Random;
 public class Supermarket {
     private int arrivalWindow;
     private int numCustomers;
-    private int numCashiers;
     private int[] arrivalTimes;
     private double meanTime;
     private PriorityQueue<Event> eventQueue;
@@ -31,11 +30,10 @@ public class Supermarket {
     private int currentTime = 0;
 
     //constructor
-    public Supermarket(int arrivalWindow, int numCustomers, int numCashiers) {
+    public Supermarket(int arrivalWindow, int numCustomers, int numCashiers, int meanTime) {
         this.arrivalWindow = arrivalWindow;
         this.numCustomers = numCustomers;
-        this.numCashiers = numCashiers;
-        this.meanTime = arrivalWindow / 4;
+        this.meanTime = meanTime;
         arrivalTimes = new int[numCustomers];
         customers = generateCustomers();
         cashiers = new ArrayList<Cashier>(numCashiers);
@@ -64,15 +62,12 @@ public class Supermarket {
     }
 
     // getters
-
     public ArrayList<Cashier> getCashiers() {
         return cashiers;
     }
-
     public ArrayList<Customer> getCustomers() {
         return customers;
     }
-
     public PriorityQueue<Event> getEventQueue() {
         return eventQueue;
     }

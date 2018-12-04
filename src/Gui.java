@@ -216,7 +216,10 @@ public class Gui extends Application {
                 new Thread() {
                     public void run() {
                         try {
-                            Supermarket smart = new Supermarket(Integer.parseInt(txtArrivalWindow.getText()), Integer.parseInt(txtMaxCustomers.getText()), Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                            Supermarket smart = new Supermarket(Integer.parseInt(txtArrivalWindow.getText()),
+                                    Integer.parseInt(txtMaxCustomers.getText()),
+                                    Integer.parseInt(txtNumberOfCheckoutLines.getText()),
+                                    Integer.parseInt(txtArrivalWindow.getText()) / 4);
                             //runSimulation(smart, simulationScene, simulationPane);
 
                             ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
