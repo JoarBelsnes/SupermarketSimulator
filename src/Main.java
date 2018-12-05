@@ -1,19 +1,21 @@
 public class Main {
 
     public static void main(String[] args) {
-        Supermarket market = new Supermarket(0,10,3,0);
-        market.addEventToQueue(new Event(0,type.CUSTOMER_CHANGE_LINE,1));
-        while(market.getEventQueue().peek() != null){
-            market.step();
-            printEventQueue(market);
-        }
+        Thread martThread = new Thread(() -> {
+            Supermarket supermarket = new Supermarket(50, 30, 2, 10);
+            int start = 0;
+            int end = 100;
+            while (start < end) {
+                supermarket.step();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("FIST!");
+                }
+            }
 
-    }
+        });
+        martThread.start();
 
-    private static void printEventQueue(Supermarket s){
-        for(int i = 0; i < s.getEventQueue().size(); i++){
-            System.out.print(s.getEventQueue().poll().getEventType() + ", ");
-        }
-        System.out.println("");
     }
 }

@@ -253,7 +253,22 @@ public class Supermarket {
                     System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
                     //remove current FINISH_CHECKOUT and add a new one
                     removeFinishCheckout(event.getCustomerID());
-                    addFinishCheckout(event.getCustomerID(), chosenCashier2);
+
+                    /**
+                     * Here we want to make sure we can check the customers number of line changes
+                     */
+                    //increase numChanges by 1
+                    customers.get(0).setNumChanges(customers.get(0).getNumChanges());
+                    if( >= 4){
+                        eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_ABANDON, currentTime+2));
+                        
+
+
+                    }
+                    else{
+                        addFinishCheckout(event.getCustomerID(), chosenCashier2);
+
+                    }
                 } else {
                     System.out.println("Customer " + event.getCustomerID() + " is in the shortest line!\n");
 
@@ -268,7 +283,6 @@ public class Supermarket {
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
                 //remove the FINISH_CHECKOUT event
                 removeFinishCheckout(event.getCustomerID());
-                System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
                 //flag customer as having departed
                 customers.get(event.getCustomerID()).setHasDeparted(currentTime);
                 break;

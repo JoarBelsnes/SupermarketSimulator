@@ -12,7 +12,9 @@ public class Customer {
     private int items;
     private int chosenCashier;
     private boolean willChange; //default to false
+    private boolean willAbandon; //default to false
     private int patienceFactor; //between 0-10, lower the patience the higher chance to leave/change
+    private int numChanges;
     private boolean hasArrived = false;
     private boolean hasDeparted = false;
     private boolean hasQueued = false;
@@ -27,6 +29,9 @@ public class Customer {
 
         Random rand = new Random();
         patienceFactor = rand.nextInt(10) + 1;
+        willAbandon = false;
+
+        numChanges = 0;
     }
 
     Customer(int id, int items) {
@@ -35,6 +40,9 @@ public class Customer {
 
         Random rand = new Random();
         this.patienceFactor = rand.nextInt(15) + 1;
+        willAbandon = false;
+
+        numChanges = 0;
     }
 
     /******* Getters and Setters  *******/
@@ -55,9 +63,18 @@ public class Customer {
         this.patienceFactor = patienceFactor1;
     }
 
+    void setNumChanges(int numChanges1){
+        this.numChanges = numChanges1+1;
+    }
+    void setWillAbandon(boolean willAbandon1){
+        this.willAbandon = true;
+    }
+
     public void setChosenCashier(int chosenCashier) {
         this.chosenCashier = chosenCashier;
     }
+
+
 
     /* GETTERS */
     public int getId() {
@@ -84,6 +101,12 @@ public class Customer {
     boolean getWillChange() {
         return willChange;
     }
+
+    int getNumChanges(){
+        return numChanges;
+    }
+
+
 
     public int getChosenCashier() {
         return chosenCashier;
@@ -146,4 +169,6 @@ public class Customer {
     }
 
     public int getDepartedTime(){return this.timeDeparted;}
+
+
 }
