@@ -15,6 +15,10 @@ public class Customer {
     private int patienceFactor; //between 0-10, lower the patience the higher chance to leave/change
     private boolean hasArrived = false;
     private boolean hasDeparted = false;
+    private boolean hasQueued = false;
+    private int timeArrived = 0;
+    private int timeQueued = 0;
+    private int timeDeparted = 0;
 
     Customer() {
         id = 0;
@@ -56,7 +60,7 @@ public class Customer {
     }
 
     /* GETTERS */
-    int getId() {
+    public int getId() {
         return id;
     }
 
@@ -112,16 +116,34 @@ public class Customer {
         return hasArrived;
     }
 
-    public void setHasArrived(boolean hasArrived) {
-        this.hasArrived = hasArrived;
+    public void setHasArrived(int i) {
+        this.hasArrived = true;
+        this.timeArrived = i;
     }
+
+    public int getArrivedTime(){return this.timeArrived;}
+
+    //returns true if customer has finished shopping and has queued for checkout
+    public boolean hasQueued() {
+        return hasQueued;
+    }
+
+    public void setHasQueued(int i) {
+        this.hasQueued = true;
+        this.timeQueued = i;
+    }
+
+    public int getQueuedTime(){return this.timeQueued;}
 
     //returns true if customer has departed from the store
     public boolean hasDeparted() {
         return hasDeparted;
     }
 
-    public void setHasDeparted(boolean hasDeparted) {
-        this.hasDeparted = hasDeparted;
+    public void setHasDeparted(int i) {
+        this.hasDeparted = true;
+        this.timeDeparted = i;
     }
+
+    public int getDepartedTime(){return this.timeDeparted;}
 }

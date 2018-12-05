@@ -169,7 +169,7 @@ public class Supermarket {
                         type.CUSTOMER_READY_CHECKOUT,
                         currentTime + customers.get(event.getCustomerID()).getShoppingTime()));
                 //flag customer as having arrived
-                customers.get(event.getCustomerID()).setHasArrived(true);
+                customers.get(event.getCustomerID()).setHasArrived(currentTime);
                 break;
 
             //when a customer is ready for checkout, decide what line to go in and decide when they will be done
@@ -209,7 +209,7 @@ public class Supermarket {
                     System.out.print(i + ", ");
                 }
                 System.out.println("");
-
+                customers.get(event.getCustomerID()).setHasQueued(currentTime);
                 break;
 
             //when a customer finishes checkout, simply remove them from the simulation
@@ -220,7 +220,7 @@ public class Supermarket {
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " was removed from event queue!\n");
                 //flag customer as having departed
-                customers.get(event.getCustomerID()).setHasDeparted(true);
+                customers.get(event.getCustomerID()).setHasDeparted(currentTime);
                 break;
 
             //when a customer changes lines, queue ready for checkout again
@@ -272,7 +272,7 @@ public class Supermarket {
                 removeFinishCheckout(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
                 //flag customer as having departed
-                customers.get(event.getCustomerID()).setHasDeparted(true);
+                customers.get(event.getCustomerID()).setHasDeparted(currentTime);
                 break;
         }
     }
@@ -314,6 +314,12 @@ public class Supermarket {
      */
     public void addEventToQueue(Event e) {
         eventQueue.add(e);
+    }
+
+    public void results(){
+        for(Customer i : customers){
+            System.out.println("Customer ID: " + " Customer Entered at: " + i.getArrivedTime() + " Customer Queued at: " + i.getQueuedTime() + " Customer Entered at: " + i.getDepartedTime());
+        }
     }
 
 }

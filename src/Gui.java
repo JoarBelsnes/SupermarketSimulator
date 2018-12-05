@@ -318,6 +318,7 @@ public class Gui extends Application {
 
                                 if (smart.getEventQueue().isEmpty()) {
                                     end = true;
+                                    smart.results();
                                 }
 
                             }
