@@ -14,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -55,14 +54,14 @@ public class Gui extends Application {
         // Creating Labels
         Text lblMaxCustomers = new Text("Max. Customers: ");
         Text lblNumberOfCheckoutLines = new Text("# of Checkout Lines: ");
-        // Text lblNumberOfLimitedCheckoutLines = new Text("# of 'x Items or Less' Checkout Lines: ");
+        // Text lblMeanArrivalTime = new Text("Customer Mean Arrival Time: ");
         Text lblMaxSimulationTime = new Text("Customer Arrival Window: ");
 
 
         // Creating Text Fields
         TextField txtMaxCustomers = new TextField();
         TextField txtNumberOfCheckoutLines = new TextField();
-        // TextField txtNumberOfLimitedCheckoutLines = new TextField();
+        // TextField txtMeanArrivalTime = new TextField();
         TextField txtArrivalWindow = new TextField();
 
         //run button
@@ -308,6 +307,7 @@ public class Gui extends Application {
         back.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 primaryStage.setScene(primaryScene);
+                new ResultsStage();
 
             }
 
@@ -340,7 +340,16 @@ public class Gui extends Application {
                 }
             }
         });
-
+        /*
+        txtMeanArrivalTime.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    txtMeanArrivalTime.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        */
 
     }
 
@@ -406,18 +415,3 @@ public class Gui extends Application {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
