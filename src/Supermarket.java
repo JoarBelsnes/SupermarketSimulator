@@ -215,7 +215,6 @@ public class Supermarket {
             //when a customer finishes checkout, simply remove them from the simulation
             case CUSTOMER_FINISH_CHECKOUT:
                 System.out.println("Customer " + event.getCustomerID() + " finished checkout");
-                eventQueue.remove(event);
                 //remove customer from their checkout line
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " was removed from event queue!\n");
@@ -247,10 +246,10 @@ public class Supermarket {
                     //remove from current line
                     cashiers.get(customers.get(event.getCustomerID())
                             .getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
+                    //change chosen cashier
+                    customers.get(event.getCustomerID()).setChosenCashier(chosenCashier2);
                     //add to new line
                     cashiers.get(chosenCashier2).addCustomerToQueue(event.getCustomerID());
-                    //remove current event
-                    eventQueue.remove(event);
                     System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
                     //remove current FINISH_CHECKOUT and add a new one
                     removeFinishCheckout(event.getCustomerID());
@@ -267,7 +266,6 @@ public class Supermarket {
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store");
                 //remove from checkout line
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
-                eventQueue.remove(event);
                 //remove the FINISH_CHECKOUT event
                 removeFinishCheckout(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
