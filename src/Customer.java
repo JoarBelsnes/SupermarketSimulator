@@ -13,6 +13,8 @@ public class Customer {
     private int chosenCashier;
     private boolean willChange; //default to false
     private int patienceFactor; //between 0-10, lower the patience the higher chance to leave/change
+    private boolean hasArrived = false;
+    private boolean hasDeparted = false;
 
     Customer() {
         id = 0;
@@ -105,4 +107,21 @@ public class Customer {
     }
 
 
+    //returns true if customer has arrived to store
+    public boolean hasArrived() {
+        return hasArrived;
+    }
+
+    public void setHasArrived(boolean hasArrived) {
+        this.hasArrived = hasArrived;
+    }
+
+    //returns true if customer has departed from the store
+    public boolean hasDeparted() {
+        return hasDeparted;
+    }
+
+    public void setHasDeparted(boolean hasDeparted) {
+        this.hasDeparted = hasDeparted;
+    }
 }

@@ -168,6 +168,8 @@ public class Supermarket {
                 eventQueue.add(new Event(event.getCustomerID(),
                         type.CUSTOMER_READY_CHECKOUT,
                         currentTime + customers.get(event.getCustomerID()).getShoppingTime()));
+                //flag customer as having arrived
+                customers.get(event.getCustomerID()).setHasArrived(true);
                 break;
 
             //when a customer is ready for checkout, decide what line to go in and decide when they will be done
@@ -217,6 +219,8 @@ public class Supermarket {
                 //remove customer from their checkout line
                 cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " was removed from event queue!\n");
+                //flag customer as having departed
+                customers.get(event.getCustomerID()).setHasDeparted(true);
                 break;
 
             //when a customer changes lines, queue ready for checkout again
@@ -267,6 +271,8 @@ public class Supermarket {
                 //remove the FINISH_CHECKOUT event
                 removeFinishCheckout(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
+                //flag customer as having departed
+                customers.get(event.getCustomerID()).setHasDeparted(true);
                 break;
         }
     }
@@ -294,9 +300,12 @@ public class Supermarket {
             for (Event e : eventQueue) {
                 if (e.getCustomerID() == id && e.getEventType() == type.CUSTOMER_FINISH_CHECKOUT) {
                     eventQueue.remove(e);
+                    break;
                 }
             }
-        } catch (ConcurrentModificationException e) {}
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
