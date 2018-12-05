@@ -1,27 +1,38 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.awt.Desktop;
+import java.io.*;
+
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.*;
 import javafx.scene.Scene;
+import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
+import javafx.scene.layout.*;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text; 
+import javafx.scene.control.TextField; 
 import javafx.stage.Stage;
-import java.io.*;
+import javafx.stage.FileChooser;
+
 import java.util.ArrayList;
 
-/**
- * class containing the GUI and acting as the runnable
- * has a supermarket instance and runs the simulation using it
- * contributors: Andrew, Joshua, Liam
- */
 public class Gui extends Application {
 
 
@@ -94,20 +105,27 @@ public class Gui extends Application {
 
 
         GridPane simulationPane = new GridPane();
+        simulationPane.setId("SimulationPane");
         simulationPane.setVgap(5);
         simulationPane.setHgap(25);
         simulationPane.setPadding(new Insets(5, 5, 5, 5));
+        //simulationPane.setGridLinesVisible(true);
+        //simulationPane.getColumnConstraints().add(new ColumnConstraints(100));
+        //simulationPane.getRowConstraints().add(new RowConstraints(100));
         Button runButton2 = new Button("Run Simulation");
         Button back = new Button("Back");
-        simulationPane.add(back, 5, 1);
-        simulationPane.add(runButton2, 1, 1);
+        simulationPane.add(back, 8, 0,2,1);
+        simulationPane.add(runButton2, 0, 0,2,1);
 
 
         Group root2 = new Group();
+        root2.setId("Root");
         root2.getChildren().addAll(simulationPane);
 
-
-        Scene simulationScene = new Scene(root2, 800, 400);
+        simulationPane.setPrefSize(800, 600);
+        Scene simulationScene = new Scene(root2, 800, 600);
+        simulationScene.setFill(Color.BLACK);
+        simulationScene.getStylesheets().add("simulation.css");
         /**
          //for loop to generate cashiers
          for (int i = 0; i < numberOfLines; i++ ){
@@ -125,6 +143,7 @@ public class Gui extends Application {
          }
          }
          **/
+
 
 
         // Stage Settings
@@ -202,7 +221,7 @@ public class Gui extends Application {
             public void handle(ActionEvent t) {
                 if(Integer.parseInt(txtMeanArrivalTime.getText()) < Integer.parseInt(txtArrivalWindow.getText())){
                     runButton2.setDisable(false);
-                    primaryStage.setScene(simulationScene);                    
+                    primaryStage.setScene(simulationScene);
                 } else {
                         Alert alertMeanGreaterThanMax = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure the \"Customer Mean Arrival\" time is less than the \"Customer Arrival Window\".", ButtonType.OK);
                         alertMeanGreaterThanMax.showAndWait();
@@ -229,8 +248,8 @@ public class Gui extends Application {
                                     Integer.parseInt(txtMeanArrivalTime.getText()));
 
                             ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
-                            ArrayList<Text> cashiersLabel = new ArrayList<Text>();
-                            ArrayList<Text> Customers = new ArrayList<Text>();
+                            ArrayList<Label> cashiersLabel = new ArrayList<Label>();
+                            ArrayList<Label> Customers = new ArrayList<Label>();
 
 
                             /**
@@ -250,7 +269,10 @@ public class Gui extends Application {
 
 
                                     for (int i = 0; i < cashiers.size(); i++) {
-                                        Text g = new Text("Line Length: " + cashiers.get(i).getLineLength());
+                                        Label g = new Label("Line Length: " + cashiers.get(i).getLineLength());
+                                        g.setId("Cashiers");
+                                        Border b = new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3)));
+                                        g.setBorder(b);
                                         cashiersLabel.add(g);
                                         int count = i;
                                         int lineLength = cashiers.get(count).getLineLength();
@@ -272,7 +294,8 @@ public class Gui extends Application {
                                     for (int z = 0; z < cashiers.size(); z++) {
 
                                         for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
-                                            Text c = new Text("Customer " + cashiers.get(z).getCustomers().get(y));
+                                            Label c = new Label("Customer " + cashiers.get(z).getCustomers().get(y));
+                                            c.setId("Customers");
                                             Customers.add(c);
                                             int number = z;
                                             int number02 = y;
