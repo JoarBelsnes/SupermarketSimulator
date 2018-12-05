@@ -15,3 +15,9 @@
 #SimulationPane {
     -fx-background-color: RGBA(120,120,120,0.5);
 }
+.Label {
+-fx-font-family: helvetica;
+    -fx-font-size: 15px;
+    -fx-text-fill: white;
+}
+

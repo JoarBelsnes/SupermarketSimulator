@@ -114,7 +114,7 @@ public class Gui extends Application {
         //simulationPane.getRowConstraints().add(new RowConstraints(100));
         Button runButton2 = new Button("Run Simulation");
         Button back = new Button("Back");
-        simulationPane.add(back, 8, 0,2,1);
+        simulationPane.add(back, 2, 0,2,1);
         simulationPane.add(runButton2, 0, 0,2,1);
 
 
@@ -122,8 +122,9 @@ public class Gui extends Application {
         root2.setId("Root");
         root2.getChildren().addAll(simulationPane);
 
-        simulationPane.setPrefSize(800, 600);
+        simulationPane.setPrefSize(1000, 600);
         Scene simulationScene = new Scene(root2, 800, 600);
+
         simulationScene.setFill(Color.BLACK);
         simulationScene.getStylesheets().add("simulation.css");
         /**
@@ -222,6 +223,7 @@ public class Gui extends Application {
                 if(Integer.parseInt(txtMeanArrivalTime.getText()) < Integer.parseInt(txtArrivalWindow.getText())){
                     runButton2.setDisable(false);
                     primaryStage.setScene(simulationScene);
+
                 } else {
                         Alert alertMeanGreaterThanMax = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure the \"Customer Mean Arrival\" time is less than the \"Customer Arrival Window\".", ButtonType.OK);
                         alertMeanGreaterThanMax.showAndWait();
@@ -247,10 +249,14 @@ public class Gui extends Application {
                                     Integer.parseInt(txtNumberOfCheckoutLines.getText()),
                                     Integer.parseInt(txtMeanArrivalTime.getText()));
 
+                            //SsimulationPane.setPrefWidth(100*Integer.parseInt(txtNumberOfCheckoutLines.getText()));
                             ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
                             ArrayList<Label> cashiersLabel = new ArrayList<Label>();
                             ArrayList<Label> Customers = new ArrayList<Label>();
 
+                            Label time = new Label ("Current time: 0");
+                            time.setId("Customers");
+                            Platform.runLater(()-> simulationPane.add(time, 4,0));
 
                             /**
                              * INITIALIZE GUI HERE
@@ -263,9 +269,10 @@ public class Gui extends Application {
                                     /**
                                      * UPDATE GUI HERE
                                      */
-
+                                    smart.getCurrentTime();
                                     cashiers = smart.getCashiers();
                                     //generates the cashiers
+                                    Platform.runLater(()->time.setText("Current time: " + smart.getCurrentTime()));
 
 
                                     for (int i = 0; i < cashiers.size(); i++) {
