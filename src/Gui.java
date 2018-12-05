@@ -54,14 +54,14 @@ public class Gui extends Application {
         // Creating Labels
         Text lblMaxCustomers = new Text("Max. Customers: ");
         Text lblNumberOfCheckoutLines = new Text("# of Checkout Lines: ");
-        // Text lblMeanArrivalTime = new Text("Customer Mean Arrival Time: ");
+        Text lblMeanArrivalTime = new Text("Customer Mean Arrival Time: ");
         Text lblMaxSimulationTime = new Text("Customer Arrival Window: ");
 
 
         // Creating Text Fields
         TextField txtMaxCustomers = new TextField();
         TextField txtNumberOfCheckoutLines = new TextField();
-        // TextField txtMeanArrivalTime = new TextField();
+        TextField txtMeanArrivalTime = new TextField();
         TextField txtArrivalWindow = new TextField();
 
         //run button
@@ -78,8 +78,8 @@ public class Gui extends Application {
         grid.add(txtMaxCustomers, 1, 0);
         grid.add(lblNumberOfCheckoutLines, 0, 1);
         grid.add(txtNumberOfCheckoutLines, 1, 1);
-        // grid.add(lblNumberOfLimitedCheckoutLines, 0, 2);
-        // grid.add(txtNumberOfLimitedCheckoutLines, 1, 2);
+        grid.add(lblMeanArrivalTime, 0, 2);
+        grid.add(txtMeanArrivalTime, 1, 2);
         grid.add(lblMaxSimulationTime, 0, 3);
         grid.add(txtArrivalWindow, 1, 3);
         grid.add(runButton, 1, 4);
@@ -143,6 +143,7 @@ public class Gui extends Application {
                 txtMaxCustomers.setText("10");
                 txtArrivalWindow.setText("50");
                 txtNumberOfCheckoutLines.setText("2");
+                txtMeanArrivalTime.setText("25");
             }
         });
         menuFileLoad.setOnAction(new EventHandler<ActionEvent>() {
@@ -159,6 +160,7 @@ public class Gui extends Application {
                         txtArrivalWindow.setText(supermarketSettings[0]);
                         txtMaxCustomers.setText(supermarketSettings[1]);
                         txtNumberOfCheckoutLines.setText(supermarketSettings[2]);
+                        txtMeanArrivalTime.setText(supermarketSettings[3]);
                     } catch (FileNotFoundException ex) {
                         ex.printStackTrace();
                     } catch (IOException ex) {
@@ -187,7 +189,7 @@ public class Gui extends Application {
                 if (file != null) {
                     try {
                         FileWriter fileWriter = new FileWriter(file);
-                        fileWriter.write(txtArrivalWindow.getText() + "," + txtMaxCustomers.getText() + "," + txtNumberOfCheckoutLines.getText());
+                        fileWriter.write(txtArrivalWindow.getText() + "," + txtMaxCustomers.getText() + "," + txtNumberOfCheckoutLines.getText() + "," + txtMeanArrivalTime.getText());
                         fileWriter.close();
                     } catch (IOException ex) {
                         System.out.println(ex.getMessage());
@@ -198,8 +200,14 @@ public class Gui extends Application {
         });
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                runButton2.setDisable(false);
-                primaryStage.setScene(simulationScene);
+                if(Integer.parseInt(txtMeanArrivalTime.getText()) < Integer.parseInt(txtArrivalWindow.getText())){
+                    runButton2.setDisable(false);
+                    primaryStage.setScene(simulationScene);                    
+                } else {
+                        Alert alertMeanGreaterThanMax = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure the \"Customer Mean Arrival\" time is less than the \"Customer Arrival Window\".", ButtonType.OK);
+                        alertMeanGreaterThanMax.showAndWait();
+                }
+
 
             }
         });
@@ -218,8 +226,7 @@ public class Gui extends Application {
                             Supermarket smart = new Supermarket(Integer.parseInt(txtArrivalWindow.getText()),
                                     Integer.parseInt(txtMaxCustomers.getText()),
                                     Integer.parseInt(txtNumberOfCheckoutLines.getText()),
-                                    Integer.parseInt(txtArrivalWindow.getText()) / 4);
-                            //runSimulation(smart, simulationScene, simulationPane);
+                                    Integer.parseInt(txtMeanArrivalTime.getText()));
 
                             ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
                             ArrayList<Text> cashiersLabel = new ArrayList<Text>();
