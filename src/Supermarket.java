@@ -320,4 +320,13 @@ public class Supermarket {
         }
     }
 
+    public int getNumberOfShoppingCustomers(){
+        int returnValue = 0;
+        for (Customer i : customers){
+            if(i.hasArrived() && !i.hasQueued() && !i.hasDeparted()){
+                returnValue++;
+            }
+        }
+        return returnValue;
+    }
 }

@@ -67,6 +67,8 @@ public class Gui extends Application {
         Text lblNumberOfCheckoutLines = new Text("# of Checkout Lines: ");
         Text lblMeanArrivalTime = new Text("Customer Mean Arrival Time: ");
         Text lblMaxSimulationTime = new Text("Customer Arrival Window: ");
+        Text lblCustomersShopping = new Text("Number of Customers Shopping: ");
+        Text dataCustomersShopping = new Text("0");
 
 
         // Creating Text Fields
@@ -116,6 +118,8 @@ public class Gui extends Application {
         Button back = new Button("Back");
         simulationPane.add(back, 2, 0,2,1);
         simulationPane.add(runButton2, 0, 0,2,1);
+        simulationPane.add(lblCustomersShopping, 0, 1);
+        simulationPane.add(dataCustomersShopping, 1, 1);
 
 
         Group root2 = new Group();
@@ -225,7 +229,7 @@ public class Gui extends Application {
                     primaryStage.setScene(simulationScene);
 
                 } else {
-                        Alert alertMeanGreaterThanMax = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure the \"Customer Mean Arrival\" time is less than the \"Customer Arrival Window\".", ButtonType.OK);
+                        Alert alertMeanGreaterThanMax = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure the \"Customer Mean Arrival\" time \nis less than the \"Customer Arrival Window\".", ButtonType.OK);
                         alertMeanGreaterThanMax.showAndWait();
                 }
 
@@ -273,6 +277,7 @@ public class Gui extends Application {
                                     cashiers = smart.getCashiers();
                                     //generates the cashiers
                                     Platform.runLater(()->time.setText("Current time: " + smart.getCurrentTime()));
+                                    Platform.runLater(()->dataCustomersShopping.setText(Integer.toString(smart.getNumberOfShoppingCustomers())));
 
 
                                     for (int i = 0; i < cashiers.size(); i++) {
