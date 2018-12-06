@@ -87,6 +87,9 @@ public class Supermarket {
         for (int i = 0; i < arrivalTimes.length; i++) {
             u = rand.nextDouble();
             x = -meanTime * Math.log(1.0 - u); //natural log
+            while(x > arrivalWindow){
+                x /= 2;
+            }
             arrivalTimes[i] = (int) (x);
         }
 
@@ -164,6 +167,7 @@ public class Supermarket {
         switch (event.getEventType()) {
 
             //when a customer arrives in the store, decide when they'll be ready for checkout
+            //and queue a ready_checkout event
             case CUSTOMER_ARRIVES:
                 System.out.println("Customer " + event.getCustomerID() + " arrived\n");
                 //calculate how long it takes to shop and enqueue the ready_checkout event
@@ -175,6 +179,7 @@ public class Supermarket {
                 break;
 
             //when a customer is ready for checkout, decide what line to go in and decide when they will be done
+            //and queue a finish_checkout event
             case CUSTOMER_READY_CHECKOUT:
                 System.out.println("Customer " + event.getCustomerID() + " is ready for checkout\n");
                 //decide what line to go in: choose the one with the shortest line
@@ -333,6 +338,10 @@ public class Supermarket {
         eventQueue.add(e);
     }
 
+    /**
+     * for each customer, prints the time they entered the store, entered queue, and left the store
+     * contributors: Joshua
+     */
     public void results(){
         for(Customer i : customers){
             System.out.println("Customer ID: " + i.getId() + 
@@ -345,6 +354,7 @@ public class Supermarket {
     /**
      * calculates the number of customers in the store, not in any checkout lines
      * @return number of customers shopping
+     * contributors: Joshua
      */
     public int getNumberOfShoppingCustomers(){
         int returnValue = 0;
@@ -356,6 +366,11 @@ public class Supermarket {
         return returnValue;
     }
 
+    /**
+     * calculates the number of customers currently in queue
+     * @return number of customers waiting in line
+     * contributors: Joshua
+     */
     public int getNumberOfQueuedCustomers(){
         int returnValue = 0;
         for (Customer i : customers){
@@ -366,6 +381,11 @@ public class Supermarket {
         return returnValue;
     }
 
+    /**
+     * calculates the number of customers who have been through the store and left
+     * @return number of already departed customers
+     * contributors: Joshua
+     */
     public int getNumberOfDepartedCustomers(){
         int returnValue = 0;
         for (Customer i : customers){
@@ -376,6 +396,11 @@ public class Supermarket {
         return returnValue;
     }
 
+    /**
+     * calculates the current average queue time of all customers who have finished checkout
+     * @return average queue time
+     * contributors: Joshua
+     */
     public double getAverageQueueTime(){
         double returnValue = 0.00;
         double runningSum = 0.00;
@@ -391,6 +416,12 @@ public class Supermarket {
         return returnValue;
     }
 
+    /**
+     * finds the longest time anyone has been in a queue
+     * (out of everyone who has finished queue)
+     * @return longest queue time
+     * contributors: Joshua
+     */
     public int getLongestQueueTime(){
         int returnValue = 0;
         for (Customer i : customers){
@@ -403,6 +434,11 @@ public class Supermarket {
         return returnValue;
     }
 
+    /**
+     * finds the number of customers who have abandoned the store
+     * @return number of customers who abandoned
+     * contributors: Joshua
+     */
     public int getRageQuit() {
         int returnValue = 0;
         for (Customer i : customers){

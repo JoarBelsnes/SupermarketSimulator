@@ -19,12 +19,7 @@ public class Event {
         this.eventType = eventType;
         this.startTime = startTime;
     }
-
-    //setters
-    void setStartTime(int startTime) {
-        this.startTime = startTime;
-    }
-
+    
     //getters
     int getStartTime() {
         return startTime;

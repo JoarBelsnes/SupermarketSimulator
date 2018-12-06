@@ -37,6 +37,6 @@ public class Cashier {
     public void removeCustomerFromQueue(int id) {
         try {
             customers.remove(customers.indexOf(id));
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException ignored) {}
     }
 }

@@ -40,39 +40,27 @@ public class Customer {
         this.patienceFactor = rand.nextInt(15) + 1;
     }
 
-    /******* Getters and Setters  *******/
-    /* SETTERS */
-    void setId(int id) {
-        this.id = id;
-    }
+    //-------- GETTERS AND SETTERS ------------//
 
-    void setItems(int items) {
-        this.items = items;
-    }
-
-    void setWillChange(boolean willChange1) {
-        this.willChange = willChange1;
-    }
-
-    void setPatienceFactor(int patienceFactor1) {
-        this.patienceFactor = patienceFactor1;
-    }
-
-    public void setChosenCashier(int chosenCashier) {
-        this.chosenCashier = chosenCashier;
-    }
-
-    /* GETTERS */
     public int getId() {
         return this.id;
+    }
+
+    void setId(int id) {
+        this.id = id;
     }
 
     public int getItems() {
         return this.items;
     }
 
+    void setItems(int items) {
+        this.items = items;
+    }
+
     /**
      * calculates shopping time based on the number of items to buy
+     *
      * @return time spent shopping
      * contributors: Liam
      */
@@ -88,31 +76,26 @@ public class Customer {
         return willChange;
     }
 
+    void setWillChange(boolean willChange1) {
+        this.willChange = willChange1;
+    }
+
     public int getChosenCashier() {
         return chosenCashier;
     }
 
-
-    //use this to determine patience level
-    //decrease patience when called
-
-    /**
-     * decreases patience level
-     * @return new patience level
-     * contributors: Jae
-     */
-    int decreasePatienceFactor() {
-        if (patienceFactor >= 2) {
-            patienceFactor--;
-        }
-        return patienceFactor;
+    public void setChosenCashier(int chosenCashier) {
+        this.chosenCashier = chosenCashier;
     }
 
     //only returns the patience factor
-    int getPatienceFactor(){
+    int getPatienceFactor() {
         return patienceFactor;
     }
 
+    void setPatienceFactor(int patienceFactor1) {
+        this.patienceFactor = patienceFactor1;
+    }
 
     //returns true if customer has arrived to store
     public boolean hasArrived() {
@@ -124,7 +107,9 @@ public class Customer {
         this.timeArrived = i;
     }
 
-    public int getArrivedTime(){return this.timeArrived;}
+    public int getArrivedTime() {
+        return this.timeArrived;
+    }
 
     //returns true if customer has finished shopping and has queued for checkout
     public boolean hasQueued() {
@@ -136,10 +121,12 @@ public class Customer {
         this.timeQueued = i;
     }
 
-    public int getQueuedTime(){return this.timeQueued;}
+    public int getQueuedTime() {
+        return this.timeQueued;
+    }
 
     //returns true if customer has departed from the store
-        public boolean hasDeparted() {
+    public boolean hasDeparted() {
         return hasDeparted;
     }
 
@@ -148,12 +135,16 @@ public class Customer {
         this.timeDeparted = i;
     }
 
-    public int getDepartedTime(){return this.timeDeparted;}
+    public int getDepartedTime() {
+        return this.timeDeparted;
+    }
 
 
-    public boolean hasRageQuit(){return this.rageQuit;}
+    public boolean hasRageQuit() {
+        return this.rageQuit;
+    }
 
-    public void rageQuit(){
+    public void rageQuit() {
         this.rageQuit = true;
     }
 
@@ -172,4 +163,19 @@ public class Customer {
     public void setNumChanges(int numChanges) {
         this.numChanges = numChanges;
     }
+
+    // ----------------- END GETTERS AND SETTERS ------------ //
+
+    /**
+     * decreases patience level
+     * @return new patience level
+     * contributors: Jae
+     */
+    int decreasePatienceFactor() {
+        if (patienceFactor >= 2) {
+            patienceFactor--;
+        }
+        return patienceFactor;
+    }
+
 }

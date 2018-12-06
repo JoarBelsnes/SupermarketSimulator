@@ -1,54 +1,33 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.awt.Desktop;
-import java.io.*;
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.*;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text; 
-import javafx.scene.control.TextField; 
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
  * Gui Class
- * Runs Supermarket Simultion in a Graphical User Interface
+ * Runs Supermarket Simulation in a Graphical User Interface
  * User can modify settings, save settings, load previously saved settings
  * Switches to Simulation View, where one can watch live data while the simulation runs
  * Will call results window at the end.
  * Contributors: Andrew, Liam, Joshua
  */
-
-
 public class Gui extends Application {
 
-
     public void start(Stage primaryStage) {
-
-
-        // Variables
-        int customersInStore = 0;
 
         // File Selector
         FileChooser fileSelector = new FileChooser();
@@ -93,7 +72,6 @@ public class Gui extends Application {
         Text lblBlank1 = new Text(" ");
         Text lblBlank2 = new Text(" ");
 
-
         // Creating Text Fields
         TextField txtMaxCustomers = new TextField();
         TextField txtMeanArrivalTime = new TextField();
@@ -111,7 +89,6 @@ public class Gui extends Application {
         final ComboBox<Integer> cmbNumberOfCheckoutsLines = new ComboBox<Integer>();
         cmbNumberOfCheckoutsLines.getItems().addAll(1, 2, 3, 4, 5);
         cmbNumberOfCheckoutsLines.setValue(2);
-
 
         // Setup Scene
         GridPane grid = new GridPane();
@@ -132,7 +109,6 @@ public class Gui extends Application {
         VBox root = new VBox();
         root.getChildren().addAll(menuBar, grid);
         Scene primaryScene = new Scene(root, 600, 300);
-
 
         // Simulation Scene
         // Left Pane
@@ -175,9 +151,6 @@ public class Gui extends Application {
         GridPane simulationPane = new GridPane();
         simulationPane.setId("SimulationPane");
         simulationPane.setPadding(new Insets(5, 5, 5, 5));
-        //simulationPane.setGridLinesVisible(true);
-        //simulationPane.getColumnConstraints().add(new ColumnConstraints(100));
-        //simulationPane.getRowConstraints().add(new RowConstraints(100));
 
         // Top Pane
         BorderPane simulationTopPane = new BorderPane();
@@ -190,7 +163,6 @@ public class Gui extends Application {
         simulationOverPane.setLeft(simulationLeftPane);
         simulationOverPane.setTop(simulationTopPane);
         simulationOverPane.setId("SimulationPane");
-
 
         Group root2 = new Group();
         root2.setId("Root");
@@ -297,103 +269,101 @@ public class Gui extends Application {
         runButton2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 runButton2.setDisable(true);
-                new Thread() {
-                    public void run() {
-                        try {
-                            Supermarket smart = new Supermarket(Integer.parseInt(txtArrivalWindow.getText()),
-                                    Integer.parseInt(txtMaxCustomers.getText()),
-                                    cmbNumberOfCheckoutsLines.getValue(),
-                                    Integer.parseInt(txtMeanArrivalTime.getText()));
+                new Thread(() -> {
+                    try {
+                        Supermarket smart = new Supermarket(Integer.parseInt(txtArrivalWindow.getText()),
+                                Integer.parseInt(txtMaxCustomers.getText()),
+                                cmbNumberOfCheckoutsLines.getValue(),
+                                Integer.parseInt(txtMeanArrivalTime.getText()));
 
-                            //SsimulationPane.setPrefWidth(100*Integer.parseInt(txtNumberOfCheckoutLines.getText()));
-                            ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
-                            ArrayList<Label> cashiersLabel = new ArrayList<Label>();
-                            ArrayList<Label> Customers = new ArrayList<Label>();
+                        //SsimulationPane.setPrefWidth(100*Integer.parseInt(txtNumberOfCheckoutLines.getText()));
+                        ArrayList<Cashier> cashiers = new ArrayList<Cashier>();
+                        ArrayList<Label> cashiersLabel = new ArrayList<Label>();
+                        ArrayList<Label> Customers = new ArrayList<Label>();
 
-                            /**
-                             * INITIALIZE GUI HERE
-                             */
-                            boolean end = false;
-                            while (!end) {
-                                //step forward in time
-                                Platform.runLater(()->dataSimulationTime.setText(Integer.toString(smart.getCurrentTime())));
-                                Platform.runLater(()->dataCustomersShopping.setText(Integer.toString(smart.getNumberOfShoppingCustomers())));
-                                Platform.runLater(()->dataCustomersInQueue.setText(Integer.toString(smart.getNumberOfQueuedCustomers())));
-                                Platform.runLater(()->dataCustomersDone.setText(Integer.toString(smart.getNumberOfDepartedCustomers())));
-                                Platform.runLater(()->dataAverageQueueTime.setText("" + smart.getAverageQueueTime()));
-                                Platform.runLater(()->dataLongestQueue.setText("" + smart.getLongestQueueTime()));
-                                Platform.runLater(()->dataNumberOfRageQuiters.setText("" + smart.getRageQuit()));
+                        /**
+                         * INITIALIZE GUI HERE
+                         */
+                        boolean end = false;
+                        while (!end) {
+                            //initialize labels
+                            Platform.runLater(()->dataSimulationTime.setText(Integer.toString(smart.getCurrentTime())));
+                            Platform.runLater(()->dataCustomersShopping.setText(Integer.toString(smart.getNumberOfShoppingCustomers())));
+                            Platform.runLater(()->dataCustomersInQueue.setText(Integer.toString(smart.getNumberOfQueuedCustomers())));
+                            Platform.runLater(()->dataCustomersDone.setText(Integer.toString(smart.getNumberOfDepartedCustomers())));
+                            Platform.runLater(()->dataAverageQueueTime.setText("" + smart.getAverageQueueTime()));
+                            Platform.runLater(()->dataLongestQueue.setText("" + smart.getLongestQueueTime()));
+                            Platform.runLater(()->dataNumberOfRageQuiters.setText("" + smart.getRageQuit()));
 
-                                if (smart.step()) {
-                                    /**
-                                     * UPDATE GUI HERE
-                                     */
-                                    smart.getCurrentTime();
-                                    cashiers = smart.getCashiers();
-                                    //generates the cashiers
-                                    for (int i = 0; i < cashiers.size(); i++) {
-                                        Label g = new Label("Line Length: " + cashiers.get(i).getLineLength());
-                                        g.setId("Cashiers");
-                                        Border b = new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3)));
-                                        g.setBorder(b);
-                                        cashiersLabel.add(g);
-                                        int count = i;
-                                        int lineLength = cashiers.get(count).getLineLength();
-                                        if (!simulationPane.getChildren().contains(cashiersLabel.get(i))) {
-                                            Platform.runLater(() -> simulationPane.add(cashiersLabel.get(count), (count), 3));
+                            //increment simulation time
+                            if (smart.step()) {
+                                //update the GUI
+                                cashiers = smart.getCashiers();
+                                //generates the cashiers
+                                for (int i = 0; i < cashiers.size(); i++) {
+                                    Label g = new Label("Line Length: " + cashiers.get(i).getLineLength());
+                                    g.setId("Cashiers");
+                                    Border b = new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3)));
+                                    g.setBorder(b);
+                                    cashiersLabel.add(g);
+                                    int count = i;
+                                    int lineLength = cashiers.get(count).getLineLength();
+                                    if (!simulationPane.getChildren().contains(cashiersLabel.get(i))) {
+                                        Platform.runLater(() -> simulationPane.add(cashiersLabel.get(count), (count), 3));
 
-                                        } else {
-                                            //updates customer text
-                                            Platform.runLater(() -> cashiersLabel.get(count).setText("Line Length: " + lineLength));
-                                        }
-                                        //generate customer line
-                                    }
-
-                                    if (Customers.size() != 0) {
-                                        Platform.runLater(() -> simulationPane.getChildren().removeAll(Customers));
-                                    }
-
-                                    //generate the customer objects
-                                    for (int z = 0; z < cashiers.size(); z++) {
-
-                                        for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
-                                            Label c = new Label("Customer " + cashiers.get(z).getCustomers().get(y));
-                                            c.setId("Customers");
-                                            Customers.add(c);
-                                            int number = z;
-                                            int number02 = y;
-                                            Platform.runLater(() -> simulationPane.add(c, number, number02 + 4));
-                                        }
+                                    } else {
+                                        //updates customer text
+                                        Platform.runLater(() -> cashiersLabel.get(count).setText("Line Length: " + lineLength));
                                     }
                                 }
-                                //System.out.println("CODE UPDATED");
 
-                                System.out.println("Current events in queue:");
-                                for (Event e : smart.getEventQueue()) {
-                                    System.out.print(e.getEventType() + ", ");
+                                if (Customers.size() != 0) {
+                                    Platform.runLater(() -> simulationPane.getChildren().removeAll(Customers));
                                 }
 
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
+                                //generate the customer objects
+                                for (int z = 0; z < cashiers.size(); z++) {
 
+                                    for (int y = 0; y < cashiers.get(z).getLineLength(); y++) {
+                                        Label c = new Label("Customer " + cashiers.get(z).getCustomers().get(y));
+                                        c.setId("Customers");
+                                        Customers.add(c);
+                                        int number = z;
+                                        int number02 = y;
+                                        Platform.runLater(() -> simulationPane.add(c, number, number02 + 4));
+                                    }
                                 }
+                            }
+                            //print the event queue to the console
+                            System.out.println("Current events in queue:");
+                            for (Event e : smart.getEventQueue()) {
+                                System.out.print(e.getEventType() + ", ");
+                            }
+                            System.out.println("");
 
-                                if (smart.getEventQueue().isEmpty()) {
-                                    end = true;
-                                    smart.results();
-                                    Platform.runLater(() -> new ResultsStage(smart));
-                                }
+                            //wait for one second
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ignored) {
 
                             }
 
+                            //end the simulation if there are no more events
+                            if (smart.getEventQueue().isEmpty()) {
+                                end = true;
+                                //open the results window
+                                smart.results();
+                                Platform.runLater(() -> new ResultsStage(smart));
+                            }
 
-                        } catch (NumberFormatException ex) {
-                            Alert alert = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure none of the fields are blank.", ButtonType.OK);
-                            alert.showAndWait();
                         }
+
+                    } catch (NumberFormatException ex) {
+                        //warn users not to leave fields blank
+                        Alert alert = new Alert(AlertType.ERROR, "Your settings are incompatable. \nMake sure none of the fields are blank.", ButtonType.OK);
+                        alert.showAndWait();
                     }
-                }.start();
+                }).start();
             }
 
         });
