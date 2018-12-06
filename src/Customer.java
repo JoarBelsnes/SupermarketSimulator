@@ -155,6 +155,7 @@ public class Customer {
 
     public void rageQuit(){
         this.rageQuit = true;
+    }
 
     public boolean willAbandon() {
         return willAbandon;
