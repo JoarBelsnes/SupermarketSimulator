@@ -12,7 +12,9 @@ public class Customer {
     private int items;
     private int chosenCashier;
     private boolean willChange; //default to false
+    private boolean willAbandon; //default to false
     private int patienceFactor; //between 0-10, lower the patience the higher chance to leave/change
+    private int numChanges = 0;
     private boolean hasArrived = false;
     private boolean hasDeparted = false;
     private boolean hasQueued = false;
@@ -148,9 +150,25 @@ public class Customer {
 
     public int getDepartedTime(){return this.timeDeparted;}
 
+
     public boolean hasRageQuit(){return this.rageQuit;}
 
     public void rageQuit(){
         this.rageQuit = true;
+
+    public boolean willAbandon() {
+        return willAbandon;
+    }
+
+    public void setWillAbandon(boolean willAbandon) {
+        this.willAbandon = willAbandon;
+    }
+
+    public int getNumChanges() {
+        return numChanges;
+    }
+
+    public void setNumChanges(int numChanges) {
+        this.numChanges = numChanges;
     }
 }

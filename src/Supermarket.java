@@ -255,10 +255,25 @@ public class Supermarket {
                     System.out.println("Customer " + event.getCustomerID() + " changed lines!\n");
                     //remove current FINISH_CHECKOUT and add a new one
                     removeFinishCheckout(event.getCustomerID());
-                    addFinishCheckout(event.getCustomerID(), chosenCashier2);
+
+                    /**
+                     * Here we want to make sure we can check the customers number of line changes
+                     */
+                    //increase numChanges by 1
+                    customers.get(event.getCustomerID()).
+                            setNumChanges(customers.get(event.getCustomerID()).getNumChanges()+1);
+
+                    //if customer has made enough line changes...
+                    if(customers.get(event.getCustomerID()).getNumChanges() >= 2){
+                        //customer abandons
+                        eventQueue.add(new Event(event.getCustomerID(), type.CUSTOMER_ABANDON, currentTime+2));
+                    }
+                    else{
+                        //otherwise, add them to the chosen line
+                        addFinishCheckout(event.getCustomerID(), chosenCashier2);
+                    }
                 } else {
                     System.out.println("Customer " + event.getCustomerID() + " is in the shortest line!\n");
-
                 }
                 break;
 
@@ -267,7 +282,8 @@ public class Supermarket {
             case CUSTOMER_ABANDON:
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store");
                 //remove from checkout line
-                cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).removeCustomerFromQueue(event.getCustomerID());
+                cashiers.get(customers.get(event.getCustomerID()).getChosenCashier()).
+                        removeCustomerFromQueue(event.getCustomerID());
                 //remove the FINISH_CHECKOUT event
                 removeFinishCheckout(event.getCustomerID());
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
@@ -319,10 +335,17 @@ public class Supermarket {
 
     public void results(){
         for(Customer i : customers){
-            System.out.println("Customer ID: " + " Customer Entered at: " + i.getArrivedTime() + " Customer Queued at: " + i.getQueuedTime() + " Customer Exited at: " + i.getDepartedTime());
+            System.out.println("Customer ID: " + i.getId() + 
+                              " Customer Entered at: " + i.getArrivedTime() + 
+                              " Customer Queued at: " + i.getQueuedTime() + 
+                              " Customer Exited at: " + i.getDepartedTime());
         }
     }
 
+    /**
+     * calculates the number of customers in the store, not in any checkout lines
+     * @return number of customers shopping
+     */
     public int getNumberOfShoppingCustomers(){
         int returnValue = 0;
         for (Customer i : customers){
