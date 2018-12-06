@@ -115,8 +115,10 @@ public class ResultsStage extends Stage{
                         fileWriter.write(lblCustomersRageQuit.getText() + " " + dataCustomersRageQuit.getText());
                         fileWriter.write(System.lineSeparator());
                         fileWriter.write(System.lineSeparator());
+                        fileWriter.write("Customer Id#," + "Number of Items," + "Entered," + "Queued," + "Departed," + "Abandoned Store,");
+                        fileWriter.write(System.lineSeparator());
                         for (Customer i : smart.getCustomers()){
-                        	fileWriter.write("Customer# :," + i.getId() + ",  Number of Items: ," + i.getItems() + ", Entered at: ," + i.getArrivedTime() + ", Queued at: ," + i.getQueuedTime() + ", Departed at: ," + i.getDepartedTime() + ", Abandoned Store :," + i.hasRageQuit() +",");
+                        	fileWriter.write(i.getId() + "," + i.getItems() + "," + i.getArrivedTime() + "," + i.getQueuedTime() + "," + i.getDepartedTime() + "," + i.hasRageQuit() +",");
                         	fileWriter.write(System.lineSeparator());
                         }
                         fileWriter.flush();
