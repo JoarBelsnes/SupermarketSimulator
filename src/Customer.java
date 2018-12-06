@@ -5,7 +5,7 @@ import java.util.Random;
  * has a (ideally unique) ID, and number of items
  * keeps track of its chosen cashier and whether it will change lines
  * based on patience factor and time in line
- * contributors: Jae, Liam
+ * contributors: Jae, Liam, Joshua
  */
 public class Customer {
     private int id;
@@ -16,6 +16,7 @@ public class Customer {
     private boolean hasArrived = false;
     private boolean hasDeparted = false;
     private boolean hasQueued = false;
+    private boolean rageQuit = false;
     private int timeArrived = 0;
     private int timeQueued = 0;
     private int timeDeparted = 0;
@@ -61,11 +62,11 @@ public class Customer {
 
     /* GETTERS */
     public int getId() {
-        return id;
+        return this.id;
     }
 
-    int getItems() {
-        return items;
+    public int getItems() {
+        return this.items;
     }
 
     /**
@@ -136,7 +137,7 @@ public class Customer {
     public int getQueuedTime(){return this.timeQueued;}
 
     //returns true if customer has departed from the store
-    public boolean hasDeparted() {
+        public boolean hasDeparted() {
         return hasDeparted;
     }
 
@@ -146,4 +147,10 @@ public class Customer {
     }
 
     public int getDepartedTime(){return this.timeDeparted;}
+
+    public boolean hasRageQuit(){return this.rageQuit;}
+
+    public void rageQuit(){
+        this.rageQuit = true;
+    }
 }

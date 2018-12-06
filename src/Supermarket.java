@@ -2,13 +2,14 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.text.DecimalFormat;
 
 /**
  * class representing a supermarket, controls the entire simulation
  * contains all customers, cashiers, and events
  * has a priority queue of events based on start time,
  * and handles events according to type
- * contributors: Liam, Jae
+ * contributors: Liam, Jae, Joshua
  */
 public class Supermarket {
     private int arrivalWindow;
@@ -18,6 +19,7 @@ public class Supermarket {
     private PriorityQueue<Event> eventQueue;
     private ArrayList<Customer> customers;
     private ArrayList<Cashier> cashiers;
+    private DecimalFormat df4 = new DecimalFormat("#,###,###,##0.0000");
 
     public int getArrivalWindow() {
         return arrivalWindow;
@@ -271,6 +273,7 @@ public class Supermarket {
                 System.out.println("Customer " + event.getCustomerID() + " abandoned the store!");
                 //flag customer as having departed
                 customers.get(event.getCustomerID()).setHasDeparted(currentTime);
+                customers.get(event.getCustomerID()).rageQuit();
                 break;
         }
     }
@@ -316,7 +319,7 @@ public class Supermarket {
 
     public void results(){
         for(Customer i : customers){
-            System.out.println("Customer ID: " + " Customer Entered at: " + i.getArrivedTime() + " Customer Queued at: " + i.getQueuedTime() + " Customer Entered at: " + i.getDepartedTime());
+            System.out.println("Customer ID: " + " Customer Entered at: " + i.getArrivedTime() + " Customer Queued at: " + i.getQueuedTime() + " Customer Exited at: " + i.getDepartedTime());
         }
     }
 
@@ -329,4 +332,62 @@ public class Supermarket {
         }
         return returnValue;
     }
+
+    public int getNumberOfQueuedCustomers(){
+        int returnValue = 0;
+        for (Customer i : customers){
+            if(i.hasQueued() && !i.hasDeparted()){
+                returnValue++;
+            }
+        }
+        return returnValue;
+    }
+
+    public int getNumberOfDepartedCustomers(){
+        int returnValue = 0;
+        for (Customer i : customers){
+            if(i.hasDeparted()){
+                returnValue++;
+            }
+        }
+        return returnValue;
+    }
+
+    public double getAverageQueueTime(){
+        double returnValue = 0.00;
+        double runningSum = 0.00;
+        for (Customer i : customers){
+            if(i.hasDeparted()){
+                runningSum = runningSum + ((i.getDepartedTime() - i.getQueuedTime()) - checkoutTime(i));
+            }
+        }
+        if(runningSum > 0.00){
+            returnValue = runningSum / getNumberOfDepartedCustomers();    
+        }
+        returnValue = new Double(df4.format(returnValue)).doubleValue();
+        return returnValue;
+    }
+
+    public int getLongestQueueTime(){
+        int returnValue = 0;
+        for (Customer i : customers){
+            if(i.hasDeparted()){
+                if((i.getDepartedTime() - i.getQueuedTime()) > returnValue){
+                    returnValue = (i.getDepartedTime() - i.getQueuedTime());
+                }
+            }
+        }
+        return returnValue;
+    }
+
+    public int getRageQuit() {
+        int returnValue = 0;
+        for (Customer i : customers){
+            if(i.hasRageQuit()){
+                returnValue++;
+            }
+        }
+        return returnValue;
+    }
+
 }
