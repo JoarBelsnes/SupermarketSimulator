@@ -44,14 +44,14 @@ public class ResultsStage extends Stage{
         Label lblCustomers = new Label("Total Number of Customers: ");
         Label lblSimulationTime = new Label("Total Simulation Time: ");
         Label lblCheckouts = new Label("Number of Checkout Lanes: ");
-        Label lblSpacer = new Label("-------------------");
+        Label lblSpacer = new Label("------------------------------------");
         Label lblLongestQueueTime = new Label("Longest Queue Time: ");
         Label lblCustomersRageQuit = new Label("Customers that Abandoned the store: ");
         // Data
         Label dataCustomers = new Label("" + smart.getCustomers().size());
         Label dataSimulationTime = new Label("" + smart.getCurrentTime());
         Label dataCheckouts = new Label("" + smart.getCashiers().size());
-        Label dataSpacer = new Label("-------------------");
+        Label dataSpacer = new Label("-------");
         Label dataLongestQueueTime = new Label("" + smart.getLongestQueueTime());
         Label dataCustomersRageQuit = new Label("" + smart.getRageQuit());
         // Buttons
@@ -59,8 +59,8 @@ public class ResultsStage extends Stage{
         Button btnClose = new Button("Close");
 
         GridPane resultsGrid = new GridPane();
-        resultsGrid.setVgap(25);
-        resultsGrid.setHgap(25);
+        resultsGrid.setVgap(2);
+        resultsGrid.setHgap(2);
         resultsGrid.setPadding(new Insets(2, 2, 2, 2));
         resultsGrid.add(lblCustomers, 0, 1);
         resultsGrid.add(lblSimulationTime, 0, 2);
@@ -78,7 +78,7 @@ public class ResultsStage extends Stage{
         resultsGrid.add(btnClose, 1, 7);
         Group resultsRoot = new Group();
         resultsRoot.getChildren().addAll(resultsGrid);
-        this.setScene(new Scene(resultsRoot, 400, 400));
+        this.setScene(new Scene(resultsRoot, 350, 250));
         this.show();
         
         // Settings
